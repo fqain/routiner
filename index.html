@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14,10 +13,9 @@
     .header-row{display:flex;align-items:center;justify-content:space-between;gap:16px}
     .brand{display:flex;gap:14px;align-items:center}.logo{font-size:28px}.subtitle{margin:2px 0 0;color:var(--muted);font-size:14px}
 
-    /* Aligned toolbar */
     .toolbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:10px}
     .toolbar .left,.toolbar .right{display:flex;align-items:center;gap:12px}
-    .control{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted)}
+    .control{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted)} 
     .control span{min-width:44px;text-align:right}
     .control input,.control select,.nav,button{height:40px;padding:0 12px;border-radius:10px}
     button.icon{width:40px;padding:0;display:grid;place-items:center}
@@ -35,31 +33,31 @@
 
     main{padding:26px;max-width:1100px;margin:0 auto}
     .summary-card{background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.04));border:1px solid rgba(255,255,255,.12);box-shadow:var(--shadow);border-radius:18px;padding:20px}
-    .summary-top{display:flex;align-items:center;justify-content:space-between;gap:20px} #dayTitle{margin:0} #dateTitle{margin:6px 0 0;color:var(--muted)}
+    .summary-top{display:flex;align-items:center;justify-content:space-between;gap:20px} 
+    #dayTitle{margin:0} 
+    #dateTitle{margin:6px 0 0;color:var(--muted)}
     .progress{display:flex;align-items:center;gap:16px}.circular-chart{width:90px;height:90px}.circle-bg{fill:none;stroke:rgba(255,255,255,.18);stroke-width:2.8}.circle{fill:none;stroke-width:2.8;stroke-linecap:round;stroke:url(#grad) var(--accent)}
     .progress-text{display:grid;place-items:center}.progress-text span{font-size:22px;font-weight:700}.progress-text small{color:var(--muted)}
     .checklist{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;margin-top:18px}
     .check{display:flex;align-items:center;gap:12px;background:var(--bg-soft);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:12px 12px}
-    .check input[type=checkbox]{width:22px;height:22px;accent-color:var(--accent)} .check label{flex:1}
-    .log{margin-top:28px} .log-header{display:flex;align-items:center;justify-content:space-between}
+    .check input[type=checkbox]{width:22px;height:22px;accent-color:var(--accent)} 
+    .check label{flex:1}
+    .log{margin-top:28px} 
+    .log-header{display:flex;align-items:center;justify-content:space-between}
     .table-wrap{overflow-x:auto;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);border-radius:14px}
-    #logTable{width:100%;border-collapse:collapse} #logTable th,#logTable td{padding:10px 12px;text-align:left;border-bottom:1px solid rgba(255,255,255,.08)} #logTable th{color:var(--muted);font-weight:600} #logTable tbody tr:hover{background:rgba(255,255,255,.06)}
-    .hint{color:var(--muted);font-size:13px;margin-top:8px} footer{text-align:center;color:var(--muted);padding:20px 10px}
-    
-/* Reset default link styles globally */
-a {
-  text-decoration: none;              /* remove underline */
-  color: inherit;                     /* use current text color */
-}
+    #logTable{width:100%;border-collapse:collapse} 
+    #logTable th,#logTable td{padding:10px 12px;text-align:left;border-bottom:1px solid rgba(255,255,255,.08)} 
+    #logTable th{color:var(--muted);font-weight:600} 
+    #logTable tbody tr:hover{background:rgba(255,255,255,.06)}
+    .hint{color:var(--muted);font-size:13px;margin-top:8px} 
+    footer{text-align:center;color:var(--muted);padding:20px 10px}
 
-/* Optional: refine visited/hover/active states globally */
-a:visited { color: inherit; }         /* no purple after visit */
-a:hover { opacity: 0.9; }             /* subtle feedback */
-a:active { opacity: 0.85; }           /* pressed feedback */
-a:focus { outline: 2px solid #7aa2ff; outline-offset: 2px; } /* accessible focus */
-
+    a { text-decoration:none; color:inherit; }
+    a:hover { opacity:.9; }
+    a:focus { outline:2px solid #7aa2ff; outline-offset:2px; }
   </style>
 </head>
+
 <body>
   <header class="app-header">
     <div class="header-row">
@@ -71,10 +69,13 @@ a:focus { outline: 2px solid #7aa2ff; outline-offset: 2px; } /* accessible focus
         </div>
       </div>
     </div>
+
     <div class="toolbar">
       <div class="left">
         <a href="dashboard.html">📊 Dashboard</a>
+         <a href="prayertimes.html">🕌 Prayer Times</a>
       </div>
+
       <div class="right">
         <label class="control">
           <span>Date</span>
@@ -89,6 +90,10 @@ a:focus { outline: 2px solid #7aa2ff; outline-offset: 2px; } /* accessible focus
             <option value="weekend">Weekend (Sat–Sun)</option>
           </select>
         </label>
+
+        <!-- NEW SUBMIT BUTTON -->
+        <button id="submitDay">Submit Day</button>
+
         <button id="resetToday" class="ghost">Reset today</button>
         <button id="darkToggle" title="Toggle theme" class="icon">🌙</button>
       </div>
@@ -103,14 +108,17 @@ a:focus { outline: 2px solid #7aa2ff; outline-offset: 2px; } /* accessible focus
             <h2 id="dayTitle">—</h2>
             <p id="dateTitle">—</p>
           </div>
+
           <div class="progress">
             <svg viewBox="0 0 36 36" class="circular-chart">
               <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-              <path id="circleProgress" class="circle" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+              <path id="circleProgress" class="circle" stroke-dasharray="0, 100"
+                d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
             </svg>
             <div class="progress-text"><span id="progressPct">0%</span><small id="progressCount">0/0</small></div>
           </div>
         </div>
+
         <div id="checklist" class="checklist"></div>
       </div>
     </section>
@@ -138,7 +146,7 @@ a:focus { outline: 2px solid #7aa2ff; outline-offset: 2px; } /* accessible focus
           <tbody></tbody>
         </table>
       </div>
-      <p class="hint">Your progress is saved privately in your browser (localStorage). Export a CSV anytime to back it up.</p>
+      <p class="hint">Your progress is saved privately in your browser (localStorage). Export CSV anytime to back it up.</p>
     </section>
   </main>
 
@@ -161,7 +169,8 @@ a:focus { outline: 2px solid #7aa2ff; outline-offset: 2px; } /* accessible focus
       exportCsv: document.getElementById('exportCsv'),
       clearAll: document.getElementById('clearAll'),
       resetToday: document.getElementById('resetToday'),
-      darkToggle: document.getElementById('darkToggle')
+      darkToggle: document.getElementById('darkToggle'),
+      submitDay: document.getElementById('submitDay')
     };
 
     const TASKS = {
@@ -186,17 +195,16 @@ a:focus { outline: 2px solid #7aa2ff; outline-offset: 2px; } /* accessible focus
 
     const STORAGE_PREFIX = 'habitLog::';
 
-    // Theme
     const initialTheme = localStorage.getItem('theme') || 'dark';
     document.documentElement.classList.toggle('light', initialTheme === 'light');
     el.darkToggle.textContent = initialTheme === 'light' ? '☀️' : '🌙';
+
     el.darkToggle.addEventListener('click', () => {
       const isLight = document.documentElement.classList.toggle('light');
       localStorage.setItem('theme', isLight ? 'light' : 'dark');
       el.darkToggle.textContent = isLight ? '☀️' : '🌙';
     });
 
-    // Helpers
     const fmtDate = (d) => d.toLocaleDateString(undefined, { weekday:'long', year:'numeric', month:'long', day:'numeric' });
     const isoDate = (d) => d.toISOString().slice(0,10);
     const slug = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,60);
@@ -205,7 +213,7 @@ a:focus { outline: 2px solid #7aa2ff; outline-offset: 2px; } /* accessible focus
     function getTasksFor(date, mode) {
       const type = mode === 'auto' ? dayTypeAuto(date) : mode;
       let tasks = [...TASKS[type]];
-      if (type === 'weekend' && date.getDay() === 0) { // Sunday
+      if (type === 'weekend' && date.getDay() === 0) {
         tasks = tasks.filter(t => t !== 'Clean House (Sat 1 hr)');
       }
       return { type, tasks };
@@ -217,7 +225,7 @@ a:focus { outline: 2px solid #7aa2ff; outline-offset: 2px; } /* accessible focus
 
     function readState(date, type) {
       const raw = localStorage.getItem(storageKey(date, type));
-      return raw ? JSON.parse(raw) : {};
+      return raw ? JSON.parse(raw) : null;
     }
 
     function writeState(date, type, obj) {
@@ -230,35 +238,43 @@ a:focus { outline: 2px solid #7aa2ff; outline-offset: 2px; } /* accessible focus
       el.dayTitle.textContent = type === 'weekday' ? 'Weekday (Mon–Thu)' : (type === 'friday' ? 'Friday' : 'Weekend (Sat–Sun)');
       el.dateTitle.textContent = fmtDate(date);
 
-      const state = readState(date, type);
+      const saved = readState(date, type);
       el.checklist.innerHTML = '';
+
+      const currentState = {};
+      tasks.forEach(task => { currentState[slug(task)] = false });
 
       tasks.forEach(task => {
         const id = slug(task);
         const row = document.createElement('div'); row.className = 'check';
-        const cb = document.createElement('input'); cb.type = 'checkbox'; cb.id = id; cb.checked = !!state[id];
+        const cb = document.createElement('input'); cb.type = 'checkbox'; cb.id = id;
+
+        if (saved && saved[id]) cb.checked = true;
+        if (saved) cb.disabled = true;
+
         const label = document.createElement('label'); label.htmlFor = id; label.textContent = task;
+
         cb.addEventListener('change', () => {
-          const newState = { ...state, [id]: cb.checked };
-          writeState(date, type, newState);
-          updateProgress(tasks, newState);
-          refreshLog();
+          currentState[id] = cb.checked;
+          updateProgress(tasks, currentState);
         });
-        row.appendChild(cb); row.appendChild(label);
+
+        row.appendChild(cb);
+        row.appendChild(label);
         el.checklist.appendChild(row);
       });
 
-      updateProgress(tasks, state);
+      updateProgress(tasks, saved || currentState);
     }
 
     function updateProgress(tasks, state) {
+      state = state || {};
       const total = tasks.length;
       const done = tasks.filter(t => state[slug(t)]).length;
       const pct = total ? Math.round((done/total)*100) : 0;
       el.progressPct.textContent = pct + '%';
       el.progressCount.textContent = `${done}/${total}`;
       el.circleProgress.setAttribute('stroke-dasharray', `${pct}, 100`);
-      el.circleProgress.style.stroke = `conic-gradient(var(--accent), var(--accent))`;
     }
 
     function refreshLog() {
@@ -266,6 +282,7 @@ a:focus { outline: 2px solid #7aa2ff; outline-offset: 2px; } /* accessible focus
       for (let i = 0; i < localStorage.length; i++) {
         const key = localStorage.key(i);
         if (!key.startsWith(STORAGE_PREFIX)) continue;
+
         const [, payload] = key.split(STORAGE_PREFIX);
         const [dateIso, type] = payload.split('::');
         const state = JSON.parse(localStorage.getItem(key));
@@ -276,7 +293,9 @@ a:focus { outline: 2px solid #7aa2ff; outline-offset: 2px; } /* accessible focus
         const dayName = new Date(dateIso).toLocaleDateString(undefined, { weekday:'long' });
         rows.push({ dateIso, dayName, type, done, total, pct });
       }
+
       rows.sort((a,b) => a.dateIso < b.dateIso ? 1 : -1);
+
       el.logTableBody.innerHTML = rows.map(r => `
         <tr>
           <td>${r.dateIso}</td>
@@ -289,40 +308,28 @@ a:focus { outline: 2px solid #7aa2ff; outline-offset: 2px; } /* accessible focus
       `).join('');
     }
 
-    function exportCSV() {
-      const headers = ['Date','Day','Mode','Completed','Total','Percent'];
-      const lines = [headers.join(',')];
-      for (let i = 0; i < localStorage.length; i++) {
-        const key = localStorage.key(i);
-        if (!key.startsWith(STORAGE_PREFIX)) continue;
-        const [, payload] = key.split(STORAGE_PREFIX);
-        const [dateIso, type] = payload.split('::');
-        const state = JSON.parse(localStorage.getItem(key));
-        const { tasks } = getTasksFor(new Date(dateIso), type);
-        const total = tasks.length;
-        const done = tasks.filter(t => state[slug(t)]).length;
-        const pct = total ? Math.round((done/total)*100) : 0;
-        const dayName = new Date(dateIso).toLocaleDateString(undefined, { weekday:'long' });
-        lines.push([dateIso, dayName, type, done, total, pct].join(','));
-      }
-      const blob = new Blob([lines.join('\n')], { type: 'text/csv;charset=utf-8;' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url; a.download = 'daily-checklist-progress.csv';
-      document.body.appendChild(a); a.click(); document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    }
+    function submitDay() {
+      const date = new Date(el.datePicker.value);
+      const { type, tasks } = getTasksFor(date, el.modeSelect.value);
 
-    function clearAllData() {
-      if (!confirm('This will permanently remove all saved progress in this browser. Continue?')) return;
-      const keysToRemove = [];
-      for (let i=0; i<localStorage.length; i++) {
-        const key = localStorage.key(i);
-        if (key.startsWith(STORAGE_PREFIX)) keysToRemove.push(key);
-      }
-      keysToRemove.forEach(k => localStorage.removeItem(k));
+      const state = {};
+      tasks.forEach(task => {
+        const id = slug(task);
+        const cb = document.getElementById(id);
+        state[id] = cb.checked;
+      });
+
+      writeState(date, type, state);
+
+      tasks.forEach(task => {
+        const cb = document.getElementById(slug(task));
+        cb.disabled = true;
+      });
+
+      updateProgress(tasks, state);
       refreshLog();
-      renderChecklist();
+
+      alert("Today's progress has been submitted and locked.");
     }
 
     function resetToday() {
@@ -333,23 +340,52 @@ a:focus { outline: 2px solid #7aa2ff; outline-offset: 2px; } /* accessible focus
       refreshLog();
     }
 
-    // SVG gradient aesthetics
-    (function attachGradient(){
-      const svg = document.querySelector('.circular-chart');
-      const defs = document.createElementNS('http://www.w3.org/2000/svg','defs');
-      const grad = document.createElementNS('http://www.w3.org/2000/svg','linearGradient');
-      grad.setAttribute('id','grad'); grad.setAttribute('x1','0%'); grad.setAttribute('y1','0%'); grad.setAttribute('x2','100%'); grad.setAttribute('y2','0%');
-      const stop1 = document.createElementNS('http://www.w3.org/2000/svg','stop'); stop1.setAttribute('offset','0%'); stop1.setAttribute('stop-color','var(--accent)');
-      const stop2 = document.createElementNS('http://www.w3.org/2000/svg','stop'); stop2.setAttribute('offset','100%'); stop2.setAttribute('stop-color','var(--accent2)');
-      grad.appendChild(stop1); grad.appendChild(stop2); defs.appendChild(grad); svg.insertBefore(defs, svg.firstChild);
-    })();
+    function clearAllData() {
+      if (!confirm('This will permanently remove all saved progress. Continue?')) return;
+      const keysToRemove = [];
+      for (let i=0; i<localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key.startsWith(STORAGE_PREFIX)) keysToRemove.push(key);
+      }
+      keysToRemove.forEach(k => localStorage.removeItem(k));
+      refreshLog();
+      renderChecklist();
+    }
 
-    // Events & init
+    function exportCSV() {
+      const headers = ['Date','Day','Mode','Completed','Total','Percent'];
+      const lines = [headers.join(',')];
+
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (!key.startsWith(STORAGE_PREFIX)) continue;
+
+        const [, payload] = key.split(STORAGE_PREFIX);
+        const [dateIso, type] = payload.split('::');
+        const state = JSON.parse(localStorage.getItem(key));
+        const { tasks } = getTasksFor(new Date(dateIso), type);
+        const total = tasks.length;
+        const done = tasks.filter(t => state[slug(t)]).length;
+        const pct = total ? Math.round((done/total)*100) : 0;
+        const dayName = new Date(dateIso).toLocaleDateString(undefined, { weekday:'long' });
+
+        lines.push([dateIso, dayName, type, done, total, pct].join(','));
+      }
+
+      const blob = new Blob([lines.join('\n')], { type:'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = 'daily-checklist-progress.csv';
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
     el.datePicker.addEventListener('change', renderChecklist);
     el.modeSelect.addEventListener('change', renderChecklist);
     el.exportCsv.addEventListener('click', exportCSV);
     el.clearAll.addEventListener('click', clearAllData);
     el.resetToday.addEventListener('click', resetToday);
+    el.submitDay.addEventListener('click', submitDay);
 
     const todayIso = new Date().toISOString().slice(0,10);
     el.datePicker.value = todayIso;
@@ -357,5 +393,6 @@ a:focus { outline: 2px solid #7aa2ff; outline-offset: 2px; } /* accessible focus
     refreshLog();
   })();
   </script>
+
 </body>
 </html>

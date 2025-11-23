@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Prayer Times — Ikram</title>
+
+  <style>
+    :root {
+      --bg:#0f1220;
+      --bg-soft:#131735;
+      --text:#e8ecff;
+      --muted:#b6c0ff;
+      --accent:#7aa2ff;
+      --accent2:#9bffd1;
+      --shadow:0 10px 30px rgba(0,0,0,.35);
+    }
+    body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, Segoe UI, Roboto;
+    }
+
+    header {
+      padding: 20px 26px;
+      border-bottom: 1px solid rgba(255,255,255,.1);
+      background: linear-gradient(180deg,rgba(10,10,30,.65),rgba(10,10,30,.15));
+      backdrop-filter: blur(12px);
+    }
+
+    main {
+      padding: 26px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .card {
+      background: var(--bg-soft);
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 18px;
+      padding: 20px;
+      box-shadow: var(--shadow);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+
+    th, td {
+      padding: 14px;
+      border-bottom: 1px solid rgba(255,255,255,.12);
+    }
+
+    th {
+      text-align: left;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .updated {
+      margin-top: 10px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+a { text-decoration: none; color: inherit; }
+a:visited { color: inherit; }
+
+a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 40px;
+  padding: 0 12px;
+  border-radius: 10px;
+  text-decoration: none;
+  color: var(--text);
+  background: var(--bg-soft);
+  border: 1px solid rgba(255,255,255,.1);
+  box-shadow: var(--shadow);
+}
+a:hover { filter: brightness(1.08); }
+a:active { transform: translateY(1px); filter: brightness(0.98); }
+a:focus { outline: 2px solid var(--accent); outline-offset: 2px; }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <h1>🕌 Prayer Times</h1>
+  <p style="color:var(--muted); margin-top:6px;">Limerick Islamic Cultural Center</p>
+  <a href="index.html">✔ Checklist</a>
+  <a href="dashboard.html">📊 Dashboard</a>
+</header>
+
+<main>
+  <div class="card">
+    <h2 id="dateTitle">Loading...</h2>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Prayer</th>
+          <th>Time</th>
+          <th>Countdown</th>
+        </tr>
+      </thead>
+      <tbody id="prayerTable"></tbody>
+    </table>
+
+    <p class="updated" id="updatedAt"></p>
+  </div>
+</main>
+
+<script>
+  let prayerTimes = [];
+
+  async function fetchPrayerTimes() {
+    const lat = 52.6638;
+    const lng = -8.6267;
+
+    const url = `https://api.aladhan.com/v1/timings?latitude=${lat}&longitude=${lng}&method=3`;
+
+    const resp = await fetch(url);
+    const json = await resp.json();
+    return json.data;
+  }
+
+  function renderTimes(data) {
+    const t = data.timings;
+    const table = document.getElementById("prayerTable");
+
+    prayerTimes = [
+      ["Fajr", t.Fajr],
+      ["Sunrise", t.Sunrise],
+      ["Dhuhr", t.Dhuhr],
+      ["Asr", t.Asr],
+      ["Maghrib", t.Maghrib],
+      ["Isha", t.Isha]
+    ];
+
+    table.innerHTML = prayerTimes.map(([name, time], i) => `
+      <tr>
+        <td>${name}</td>
+        <td>${time}</td>
+        <td id="cd-${i}">--</td>
+      </tr>
+    `).join("");
+
+    document.getElementById("dateTitle").textContent =
+      new Date().toLocaleDateString(undefined, {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric"
+      });
+
+    document.getElementById("updatedAt").textContent =
+      "Source: AlAdhan.com • Times auto-updated";
+  }
+
+  function toTodayDate(timeStr) {
+    const [h, m] = timeStr.split(":").map(Number);
+    const d = new Date();
+    d.setHours(h, m, 0, 0);
+    return d;
+  }
+
+  function updateCountdowns() {
+    const now = new Date();
+
+    prayerTimes.forEach(([_, time], i) => {
+      let target = toTodayDate(time);
+
+      // If time already passed, countdown to tomorrow's same prayer
+      if (target < now) {
+        target.setDate(target.getDate() + 1);
+      }
+
+      const diffMs = target - now;
+      const diffSec = Math.floor(diffMs / 1000);
+
+      const h = Math.floor(diffSec / 3600);
+      const m = Math.floor((diffSec % 3600) / 60);
+      const s = diffSec % 60;
+
+      document.getElementById(`cd-${i}`).innerText =
+        `${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;
+    });
+  }
+
+  (async function init() {
+    const data = await fetchPrayerTimes();
+    renderTimes(data);
+    updateCountdowns();
+    setInterval(updateCountdowns, 1000);
+  })();
+</script>
+
+</body>
+</html>
