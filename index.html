@@ -1,0 +1,361 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Daily Checklist — Ikram</title>
+  <style>
+    :root { --bg:#0f1220; --bg-soft:#131735; --text:#e8ecff; --muted:#b6c0ff; --accent:#7aa2ff; --accent2:#9bffd1; --danger:#ff6b6b; --shadow:0 10px 30px rgba(0,0,0,.35); }
+    :root.light { --bg:#f5f7fb; --bg-soft:#eef2fa; --text:#12152a; --muted:#4a5270; --accent:#365dfc; --accent2:#13c4a3; --danger:#d64545; --shadow:0 10px 25px rgba(50,84,159,.15); }
+    *{box-sizing:border-box} body{margin:0;color:var(--text);background:radial-gradient(60vmax 60vmax at 5% 10%, #16193d, transparent 60%),radial-gradient(40vmax 40vmax at 95% 5%, #0b2466, transparent 60%),radial-gradient(70vmax 70vmax at 50% 100%, #0c1030, transparent 60%),var(--bg);font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial,"Noto Sans",sans-serif}
+
+    .app-header{position:sticky;top:0;z-index:10;backdrop-filter:blur(12px) saturate(130%);background:linear-gradient(180deg,rgba(10,10,30,.6),rgba(10,10,30,.25));border-bottom:1px solid rgba(255,255,255,.08);padding:16px 22px}
+    .header-row{display:flex;align-items:center;justify-content:space-between;gap:16px}
+    .brand{display:flex;gap:14px;align-items:center}.logo{font-size:28px}.subtitle{margin:2px 0 0;color:var(--muted);font-size:14px}
+
+    /* Aligned toolbar */
+    .toolbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:10px}
+    .toolbar .left,.toolbar .right{display:flex;align-items:center;gap:12px}
+    .control{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted)}
+    .control span{min-width:44px;text-align:right}
+    .control input,.control select,.nav,button{height:40px;padding:0 12px;border-radius:10px}
+    button.icon{width:40px;padding:0;display:grid;place-items:center}
+    .control input,.control select{background:var(--bg-soft);color:var(--text);border:1px solid rgba(255,255,255,.1);outline:none;box-shadow:var(--shadow)}
+    a.nav{display:inline-flex;align-items:center;gap:8px;text-decoration:none;color:var(--text);background:var(--bg-soft);border:1px solid rgba(255,255,255,.1);box-shadow:var(--shadow)}
+    button{cursor:pointer;border:0;color:var(--text);background:linear-gradient(180deg,var(--accent),#3257d3);box-shadow:var(--shadow)}
+    button.ghost{background:var(--bg-soft)}
+    button.danger{background:linear-gradient(180deg,var(--danger),#b23b3b)}
+
+    @media (max-width:900px){
+      .toolbar{flex-direction:column;align-items:stretch;gap:10px}
+      .toolbar .right{flex-wrap:wrap}
+      .control span{min-width:38px}
+    }
+
+    main{padding:26px;max-width:1100px;margin:0 auto}
+    .summary-card{background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.04));border:1px solid rgba(255,255,255,.12);box-shadow:var(--shadow);border-radius:18px;padding:20px}
+    .summary-top{display:flex;align-items:center;justify-content:space-between;gap:20px} #dayTitle{margin:0} #dateTitle{margin:6px 0 0;color:var(--muted)}
+    .progress{display:flex;align-items:center;gap:16px}.circular-chart{width:90px;height:90px}.circle-bg{fill:none;stroke:rgba(255,255,255,.18);stroke-width:2.8}.circle{fill:none;stroke-width:2.8;stroke-linecap:round;stroke:url(#grad) var(--accent)}
+    .progress-text{display:grid;place-items:center}.progress-text span{font-size:22px;font-weight:700}.progress-text small{color:var(--muted)}
+    .checklist{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;margin-top:18px}
+    .check{display:flex;align-items:center;gap:12px;background:var(--bg-soft);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:12px 12px}
+    .check input[type=checkbox]{width:22px;height:22px;accent-color:var(--accent)} .check label{flex:1}
+    .log{margin-top:28px} .log-header{display:flex;align-items:center;justify-content:space-between}
+    .table-wrap{overflow-x:auto;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);border-radius:14px}
+    #logTable{width:100%;border-collapse:collapse} #logTable th,#logTable td{padding:10px 12px;text-align:left;border-bottom:1px solid rgba(255,255,255,.08)} #logTable th{color:var(--muted);font-weight:600} #logTable tbody tr:hover{background:rgba(255,255,255,.06)}
+    .hint{color:var(--muted);font-size:13px;margin-top:8px} footer{text-align:center;color:var(--muted);padding:20px 10px}
+    
+/* Reset default link styles globally */
+a {
+  text-decoration: none;              /* remove underline */
+  color: inherit;                     /* use current text color */
+}
+
+/* Optional: refine visited/hover/active states globally */
+a:visited { color: inherit; }         /* no purple after visit */
+a:hover { opacity: 0.9; }             /* subtle feedback */
+a:active { opacity: 0.85; }           /* pressed feedback */
+a:focus { outline: 2px solid #7aa2ff; outline-offset: 2px; } /* accessible focus */
+
+  </style>
+</head>
+<body>
+  <header class="app-header">
+    <div class="header-row">
+      <div class="brand">
+        <div class="logo">📅</div>
+        <div>
+          <h1>Daily Checklist</h1>
+          <p class="subtitle">Weekdays · Friday · Weekend — track, reflect, and grow</p>
+        </div>
+      </div>
+    </div>
+    <div class="toolbar">
+      <div class="left">
+        <a href="dashboard.html">📊 Dashboard</a>
+      </div>
+      <div class="right">
+        <label class="control">
+          <span>Date</span>
+          <input type="date" id="datePicker" />
+        </label>
+        <label class="control">
+          <span>Mode</span>
+          <select id="modeSelect">
+            <option value="auto">Auto</option>
+            <option value="weekday">Weekday (Mon–Thu)</option>
+            <option value="friday">Friday</option>
+            <option value="weekend">Weekend (Sat–Sun)</option>
+          </select>
+        </label>
+        <button id="resetToday" class="ghost">Reset today</button>
+        <button id="darkToggle" title="Toggle theme" class="icon">🌙</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="summary">
+      <div class="summary-card">
+        <div class="summary-top">
+          <div>
+            <h2 id="dayTitle">—</h2>
+            <p id="dateTitle">—</p>
+          </div>
+          <div class="progress">
+            <svg viewBox="0 0 36 36" class="circular-chart">
+              <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+              <path id="circleProgress" class="circle" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+            </svg>
+            <div class="progress-text"><span id="progressPct">0%</span><small id="progressCount">0/0</small></div>
+          </div>
+        </div>
+        <div id="checklist" class="checklist"></div>
+      </div>
+    </section>
+
+    <section class="log">
+      <div class="log-header">
+        <h3>Progress Log</h3>
+        <div class="log-actions">
+          <button id="exportCsv">Export CSV</button>
+          <button id="clearAll" class="danger">Clear All Data</button>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table id="logTable">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Day</th>
+              <th>Mode</th>
+              <th>Completed</th>
+              <th>Total</th>
+              <th>Percent</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <p class="hint">Your progress is saved privately in your browser (localStorage). Export a CSV anytime to back it up.</p>
+    </section>
+  </main>
+
+  <footer>
+    <p>Made with intention and consistency.</p>
+  </footer>
+
+  <script>
+  (function(){
+    const el = {
+      datePicker: document.getElementById('datePicker'),
+      modeSelect: document.getElementById('modeSelect'),
+      dayTitle: document.getElementById('dayTitle'),
+      dateTitle: document.getElementById('dateTitle'),
+      checklist: document.getElementById('checklist'),
+      circleProgress: document.getElementById('circleProgress'),
+      progressPct: document.getElementById('progressPct'),
+      progressCount: document.getElementById('progressCount'),
+      logTableBody: document.querySelector('#logTable tbody'),
+      exportCsv: document.getElementById('exportCsv'),
+      clearAll: document.getElementById('clearAll'),
+      resetToday: document.getElementById('resetToday'),
+      darkToggle: document.getElementById('darkToggle')
+    };
+
+    const TASKS = {
+      weekday: [
+        'Morning News/Podcast','Lunch Gym','Evening Study (2 hrs)',
+        'Fajr + Dhikr + Personal Duas','Quran (1 Page)','Journaling (30 mins)',
+        'Evening Dhikr','Islamic Lecture (30 mins)','Sleep by 10 PM',
+        'All Prayers Completed (Daily)'
+      ],
+      friday: [
+        'Morning News/Podcast','Lunch Gym','Evening Study (2 hrs)',
+        'Fajr + Dhikr','Quran','Journaling','Evening Dhikr','Islamic Lecture',
+        'Sleep by 10 PM','Read All Duas After Jumu’ah','All Prayers Completed (Daily)'
+      ],
+      weekend: [
+        'Cook & Document Meal','Logic Exercises (2 hrs)','Training & Certification (4 hrs)',
+        'Clean House (Sat 1 hr)','Work Catch-Up (1 hr)','Home Workout','Flight Simulation',
+        'Islamic Studies (1 hr)','Fajr + Dhikr + Personal Duas','Quran','Journaling',
+        'Evening Dhikr','Islamic Lecture','Sleep by 10 PM','All Prayers Completed (Daily)'
+      ]
+    };
+
+    const STORAGE_PREFIX = 'habitLog::';
+
+    // Theme
+    const initialTheme = localStorage.getItem('theme') || 'dark';
+    document.documentElement.classList.toggle('light', initialTheme === 'light');
+    el.darkToggle.textContent = initialTheme === 'light' ? '☀️' : '🌙';
+    el.darkToggle.addEventListener('click', () => {
+      const isLight = document.documentElement.classList.toggle('light');
+      localStorage.setItem('theme', isLight ? 'light' : 'dark');
+      el.darkToggle.textContent = isLight ? '☀️' : '🌙';
+    });
+
+    // Helpers
+    const fmtDate = (d) => d.toLocaleDateString(undefined, { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+    const isoDate = (d) => d.toISOString().slice(0,10);
+    const slug = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,60);
+    const dayTypeAuto = (d) => { const wd=d.getDay(); if (wd===5) return 'friday'; if (wd===0||wd===6) return 'weekend'; return 'weekday'; };
+
+    function getTasksFor(date, mode) {
+      const type = mode === 'auto' ? dayTypeAuto(date) : mode;
+      let tasks = [...TASKS[type]];
+      if (type === 'weekend' && date.getDay() === 0) { // Sunday
+        tasks = tasks.filter(t => t !== 'Clean House (Sat 1 hr)');
+      }
+      return { type, tasks };
+    }
+
+    function storageKey(date, type) {
+      return STORAGE_PREFIX + isoDate(date) + '::' + type;
+    }
+
+    function readState(date, type) {
+      const raw = localStorage.getItem(storageKey(date, type));
+      return raw ? JSON.parse(raw) : {};
+    }
+
+    function writeState(date, type, obj) {
+      localStorage.setItem(storageKey(date, type), JSON.stringify(obj));
+    }
+
+    function renderChecklist() {
+      const date = new Date(el.datePicker.value);
+      const { type, tasks } = getTasksFor(date, el.modeSelect.value);
+      el.dayTitle.textContent = type === 'weekday' ? 'Weekday (Mon–Thu)' : (type === 'friday' ? 'Friday' : 'Weekend (Sat–Sun)');
+      el.dateTitle.textContent = fmtDate(date);
+
+      const state = readState(date, type);
+      el.checklist.innerHTML = '';
+
+      tasks.forEach(task => {
+        const id = slug(task);
+        const row = document.createElement('div'); row.className = 'check';
+        const cb = document.createElement('input'); cb.type = 'checkbox'; cb.id = id; cb.checked = !!state[id];
+        const label = document.createElement('label'); label.htmlFor = id; label.textContent = task;
+        cb.addEventListener('change', () => {
+          const newState = { ...state, [id]: cb.checked };
+          writeState(date, type, newState);
+          updateProgress(tasks, newState);
+          refreshLog();
+        });
+        row.appendChild(cb); row.appendChild(label);
+        el.checklist.appendChild(row);
+      });
+
+      updateProgress(tasks, state);
+    }
+
+    function updateProgress(tasks, state) {
+      const total = tasks.length;
+      const done = tasks.filter(t => state[slug(t)]).length;
+      const pct = total ? Math.round((done/total)*100) : 0;
+      el.progressPct.textContent = pct + '%';
+      el.progressCount.textContent = `${done}/${total}`;
+      el.circleProgress.setAttribute('stroke-dasharray', `${pct}, 100`);
+      el.circleProgress.style.stroke = `conic-gradient(var(--accent), var(--accent))`;
+    }
+
+    function refreshLog() {
+      const rows = [];
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (!key.startsWith(STORAGE_PREFIX)) continue;
+        const [, payload] = key.split(STORAGE_PREFIX);
+        const [dateIso, type] = payload.split('::');
+        const state = JSON.parse(localStorage.getItem(key));
+        const { tasks } = getTasksFor(new Date(dateIso), type);
+        const total = tasks.length;
+        const done = tasks.filter(t => state[slug(t)]).length;
+        const pct = total ? Math.round((done/total)*100) : 0;
+        const dayName = new Date(dateIso).toLocaleDateString(undefined, { weekday:'long' });
+        rows.push({ dateIso, dayName, type, done, total, pct });
+      }
+      rows.sort((a,b) => a.dateIso < b.dateIso ? 1 : -1);
+      el.logTableBody.innerHTML = rows.map(r => `
+        <tr>
+          <td>${r.dateIso}</td>
+          <td>${r.dayName}</td>
+          <td>${r.type}</td>
+          <td>${r.done}</td>
+          <td>${r.total}</td>
+          <td>${r.pct}%</td>
+        </tr>
+      `).join('');
+    }
+
+    function exportCSV() {
+      const headers = ['Date','Day','Mode','Completed','Total','Percent'];
+      const lines = [headers.join(',')];
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (!key.startsWith(STORAGE_PREFIX)) continue;
+        const [, payload] = key.split(STORAGE_PREFIX);
+        const [dateIso, type] = payload.split('::');
+        const state = JSON.parse(localStorage.getItem(key));
+        const { tasks } = getTasksFor(new Date(dateIso), type);
+        const total = tasks.length;
+        const done = tasks.filter(t => state[slug(t)]).length;
+        const pct = total ? Math.round((done/total)*100) : 0;
+        const dayName = new Date(dateIso).toLocaleDateString(undefined, { weekday:'long' });
+        lines.push([dateIso, dayName, type, done, total, pct].join(','));
+      }
+      const blob = new Blob([lines.join('\n')], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = 'daily-checklist-progress.csv';
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    function clearAllData() {
+      if (!confirm('This will permanently remove all saved progress in this browser. Continue?')) return;
+      const keysToRemove = [];
+      for (let i=0; i<localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key.startsWith(STORAGE_PREFIX)) keysToRemove.push(key);
+      }
+      keysToRemove.forEach(k => localStorage.removeItem(k));
+      refreshLog();
+      renderChecklist();
+    }
+
+    function resetToday() {
+      const date = new Date(el.datePicker.value);
+      const { type } = getTasksFor(date, el.modeSelect.value);
+      localStorage.removeItem(storageKey(date, type));
+      renderChecklist();
+      refreshLog();
+    }
+
+    // SVG gradient aesthetics
+    (function attachGradient(){
+      const svg = document.querySelector('.circular-chart');
+      const defs = document.createElementNS('http://www.w3.org/2000/svg','defs');
+      const grad = document.createElementNS('http://www.w3.org/2000/svg','linearGradient');
+      grad.setAttribute('id','grad'); grad.setAttribute('x1','0%'); grad.setAttribute('y1','0%'); grad.setAttribute('x2','100%'); grad.setAttribute('y2','0%');
+      const stop1 = document.createElementNS('http://www.w3.org/2000/svg','stop'); stop1.setAttribute('offset','0%'); stop1.setAttribute('stop-color','var(--accent)');
+      const stop2 = document.createElementNS('http://www.w3.org/2000/svg','stop'); stop2.setAttribute('offset','100%'); stop2.setAttribute('stop-color','var(--accent2)');
+      grad.appendChild(stop1); grad.appendChild(stop2); defs.appendChild(grad); svg.insertBefore(defs, svg.firstChild);
+    })();
+
+    // Events & init
+    el.datePicker.addEventListener('change', renderChecklist);
+    el.modeSelect.addEventListener('change', renderChecklist);
+    el.exportCsv.addEventListener('click', exportCSV);
+    el.clearAll.addEventListener('click', clearAllData);
+    el.resetToday.addEventListener('click', resetToday);
+
+    const todayIso = new Date().toISOString().slice(0,10);
+    el.datePicker.value = todayIso;
+    renderChecklist();
+    refreshLog();
+  })();
+  </script>
+</body>
+</html>

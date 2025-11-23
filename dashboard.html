@@ -1,0 +1,362 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dashboard — Ikram</title>
+  <style>
+    :root { --bg:#0f1220; --bg-soft:#131735; --text:#e8ecff; --muted:#b6c0ff; --accent:#7aa2ff; --accent2:#9bffd1; --danger:#ff6b6b; --good:#2ecc71; --warn:#f1c40f; --shadow:0 10px 30px rgba(0,0,0,.35); }
+    :root.light { --bg:#f5f7fb; --bg-soft:#eef2fa; --text:#12152a; --muted:#4a5270; --accent:#365dfc; --accent2:#13c4a3; --danger:#d64545; --good:#2e9d5b; --warn:#caa20d; --shadow:0 10px 25px rgba(50,84,159,.15); }
+    *{box-sizing:border-box} body{margin:0;color:var(--text);background:radial-gradient(60vmax 60vmax at 5% 10%, #16193d, transparent 60%),radial-gradient(40vmax 40vmax at 95% 5%, #0b2466, transparent 60%),radial-gradient(70vmax 70vmax at 50% 100%, #0c1030, transparent 60%),var(--bg);font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial,"Noto Sans",sans-serif}
+
+    .app-header{position:sticky;top:0;z-index:10;backdrop-filter:blur(12px) saturate(130%);background:linear-gradient(180deg,rgba(10,10,30,.6),rgba(10,10,30,.25));border-bottom:1px solid rgba(255,255,255,.08);padding:16px 22px}
+    .header-row{display:flex;align-items:center;justify-content:space-between;gap:16px}
+    .brand{display:flex;gap:14px;align-items:center}.logo{font-size:28px}.subtitle{margin:2px 0 0;color:var(--muted);font-size:14px}
+
+    /* Aligned toolbar */
+    .toolbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:10px}
+    .toolbar .left,.toolbar .right{display:flex;align-items:center;gap:12px}
+    .control{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted)}
+    .control span{min-width:44px;text-align:right}
+    .control input,.nav,button{height:40px;padding:0 12px;border-radius:10px}
+    button.icon{width:40px;padding:0;display:grid;place-items:center}
+    .control input{background:var(--bg-soft);color:var(--text);border:1px solid rgba(255,255,255,.1);outline:none;box-shadow:var(--shadow)}
+    a.nav{display:inline-flex;align-items:center;gap:8px;text-decoration:none;color:var(--text);background:var(--bg-soft);border:1px solid rgba(255,255,255,.1);box-shadow:var(--shadow)}
+    #darkToggle{background:var(--bg-soft);border:0;color:var(--text)}
+    @media (max-width:900px){
+      .toolbar{flex-direction:column;align-items:stretch;gap:10px}
+      .toolbar .right{flex-wrap:wrap}
+      .control span{min-width:38px}
+    }
+
+    main{padding:26px;max-width:1150px;margin:0 auto}
+    .card{background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.04));border:1px solid rgba(255,255,255,.12);box-shadow:var(--shadow);border-radius:18px;padding:18px}
+    .grid-30{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px}
+    .daycell{border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:10px;background:var(--bg-soft)}
+    .daycell .top{display:flex;justify-content:space-between;color:var(--muted);font-size:12px}
+    .bar{height:8px;border-radius:999px;background:rgba(255,255,255,.1);margin-top:8px;position:relative;overflow:hidden}
+    .bar .fill{position:absolute;top:0;left:0;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2))}
+    .status{margin-top:8px;font-size:12px;color:var(--muted)}
+    .tag{display:inline-block;font-size:11px;border-radius:999px;padding:4px 8px;margin-right:6px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.06)}
+    .section-title{margin:0 0 10px 2px}
+    .hour-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:6px}
+    .hour{background:var(--bg-soft);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:8px;text-align:center;font-size:12px;cursor:pointer}
+    .hour.done{background:linear-gradient(180deg,var(--accent),#3257d3)}
+    .kpi{display:flex;gap:12px;flex-wrap:wrap}
+    .kpi .mini{flex:1 1 220px;border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:12px;background:var(--bg-soft)}
+    .kpi .mini h4{margin:0 0 6px 0}
+    .good{color:var(--good)} .warn{color:var(--warn)} .bad{color:var(--danger)}
+    footer{text-align:center;color:var(--muted);padding:20px 10px}
+    @media (max-width:740px){.hour-grid{grid-template-columns:repeat(6,1fr)}}
+    
+/* Reset default browser link styles (optional but handy) */
+a { text-decoration: none; color: inherit; }
+a:visited { color: inherit; }
+
+/* Styled nav pill */
+a.nav {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 40px;
+  padding: 0 12px;
+  border-radius: 10px;
+  text-decoration: none;
+  color: var(--text);
+  background: var(--bg-soft);
+  border: 1px solid rgba(255,255,255,.1);
+  box-shadow: var(--shadow);
+}
+a.nav:hover { filter: brightness(1.08); }
+a.nav:active { transform: translateY(1px); filter: brightness(0.98); }
+a.nav:focus { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  </style>
+</head>
+<body>
+  <header class="app-header">
+    <div class="header-row">
+      <div class="brand">
+        <div class="logo">📊</div>
+        <div>
+          <h1>Dashboard</h1>
+          <p class="subtitle">30‑Day board · Hourly · Weekly summary · Streaks</p>
+        </div>
+      </div>
+    </div>
+    <div class="toolbar">
+      <div class="left">
+        <a href="home.html">✔ Checklist</a>
+      </div>
+      <div class="right">
+        <label class="control">
+          <span>Focus</span>
+          <input type="date" id="focusDate" />
+        </label>
+        <button id="darkToggle" title="Toggle theme" class="icon">🌙</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- 30-Day Board -->
+    <section class="card">
+      <h3 class="section-title">30‑Day Cycle Board</h3>
+      <div id="board30" class="grid-30"></div>
+    </section>
+
+    <!-- Hourly Tracker -->
+    <section class="card" style="margin-top:14px">
+      <h3 class="section-title">Per‑Hour Items (24h)</h3>
+      <div id="hourGrid" class="hour-grid"></div>
+      <div style="margin-top:10px;display:flex;gap:8px">
+        <button id="resetHours" class="nav">Reset Hours</button>
+        <span class="tag">Saved locally (hourLog::<date>)</span>
+      </div>
+    </section>
+
+    <!-- Weekly Summary & Streaks -->
+    <section class="card" style="margin-top:14px">
+      <h3 class="section-title">Weekly Summary & Streaks</h3>
+      <div class="kpi">
+        <div class="mini">
+          <h4>Week (Mon–Sun)</h4>
+          <div id="weekSummary"></div>
+        </div>
+        <div class="mini">
+          <h4>Prayer Streak — “All Prayers Completed (Daily)”</h4>
+          <div id="streaks"></div>
+        </div>
+        <div class="mini">
+          <h4>Overall Completion Streak (≥80%)</h4>
+          <div id="streakOverall"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>Strong habits, stronger you.</p>
+  </footer>
+
+  <script>
+  (function(){
+    const STORAGE_PREFIX = 'habitLog::';
+    const HOUR_PREFIX = 'hourLog::'; // hourLog::<YYYY-MM-DD> -> {0:true, ..., 23:false}
+
+    const TASKS = {
+      weekday: [
+        'Morning News/Podcast','Lunch Gym','Evening Study (2 hrs)',
+        'Fajr + Dhikr + Personal Duas','Quran (1 Page)','Journaling (30 mins)',
+        'Evening Dhikr','Islamic Lecture (30 mins)','Sleep by 10 PM',
+        'All Prayers Completed (Daily)'
+      ],
+      friday: [
+        'Morning News/Podcast','Lunch Gym','Evening Study (2 hrs)',
+        'Fajr + Dhikr','Quran','Journaling','Evening Dhikr','Islamic Lecture',
+        'Sleep by 10 PM','Read All Duas After Jumu’ah','All Prayers Completed (Daily)'
+      ],
+      weekend: [
+        'Cook & Document Meal','Logic Exercises (2 hrs)','Training & Certification (4 hrs)',
+        'Clean House (Sat 1 hr)','Work Catch-Up (1 hr)','Home Workout','Flight Simulation',
+        'Islamic Studies (1 hr)','Fajr + Dhikr + Personal Duas','Quran','Journaling',
+        'Evening Dhikr','Islamic Lecture','Sleep by 10 PM','All Prayers Completed (Daily)'
+      ]
+    };
+
+    // Theme
+    const initTheme = localStorage.getItem('theme') || 'dark';
+    document.documentElement.classList.toggle('light', initTheme === 'light');
+    document.getElementById('darkToggle').textContent = initTheme === 'light' ? '☀️' : '🌙';
+    document.getElementById('darkToggle').addEventListener('click', () => {
+      const isLight = document.documentElement.classList.toggle('light');
+      localStorage.setItem('theme', isLight ? 'light' : 'dark');
+      document.getElementById('darkToggle').textContent = isLight ? '☀️' : '🌙';
+    });
+
+    // Utilities
+    const iso = d => d.toISOString().slice(0,10);
+    const slug = s => s.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,60);
+    const dayType = d => { const wd = d.getDay(); if (wd===5) return 'friday'; if (wd===0 || wd===6) return 'weekend'; return 'weekday'; };
+    const fmtShort = d => d.toLocaleDateString(undefined, { month:'short', day:'numeric' });
+    const fmtWeekday = d => d.toLocaleDateString(undefined, { weekday:'short' });
+
+    function tasksFor(d, typeOverride) {
+      const type = typeOverride || dayType(d);
+      let tasks = [...TASKS[type]];
+      if (type==='weekend' && d.getDay()===0){ // Sunday
+        tasks = tasks.filter(t => t !== 'Clean House (Sat 1 hr)');
+      }
+      return { type, tasks };
+    }
+
+    function readDayState(dateISO, type) {
+      const raw = localStorage.getItem(STORAGE_PREFIX + dateISO + '::' + type);
+      return raw ? JSON.parse(raw) : {};
+    }
+
+    function calcPct(dateISO, type) {
+      const d = new Date(dateISO);
+      const { tasks } = tasksFor(d, type);
+      const state = readDayState(dateISO, type);
+      const done = tasks.filter(t => state[slug(t)]).length;
+      const total = tasks.length;
+      return { done, total, pct: total ? Math.round(done/total*100) : 0 };
+    }
+
+    // 30-Day Board
+    function renderBoard30(centerISO) {
+      const board = document.getElementById('board30');
+      board.innerHTML = '';
+      const center = new Date(centerISO);
+      const days = [];
+      for (let i=29; i>=0; i--) {
+        const d = new Date(center);
+        d.setDate(center.getDate() - i);
+        days.push(d);
+      }
+      days.forEach(d => {
+        const di = iso(d);
+        const { type } = tasksFor(d);
+        const { done, total, pct } = calcPct(di, type);
+        const cell = document.createElement('div');
+        cell.className = 'daycell';
+        cell.innerHTML = `
+          <div class="top">
+            <span>${fmtShort(d)} (${fmtWeekday(d)})</span>
+            <span>${type}</span>
+          </div>
+          <div class="bar"><div class="fill" style="width:${pct}%;"></div></div>
+          <div class="status">
+            <span class="tag">${done}/${total}</span>
+            <span class="tag">${pct}%</span>
+            ${pct>=80?'<span class="tag">👍 Strong</span>':pct>=50?'<span class="tag">🟡 Ok</span>':'<span class="tag">🔴 Low</span>'}
+          </div>
+        `;
+        board.appendChild(cell);
+      });
+    }
+
+    // Hourly Tracker
+    function readHours(dateISO) {
+      const raw = localStorage.getItem(HOUR_PREFIX + dateISO);
+      return raw ? JSON.parse(raw) : {}; // { '0':true, ... }
+    }
+    function writeHours(dateISO, obj) {
+      localStorage.setItem(HOUR_PREFIX + dateISO, JSON.stringify(obj));
+    }
+    function renderHours(dateISO) {
+      const wrap = document.getElementById('hourGrid');
+      wrap.innerHTML = '';
+      const hours = readHours(dateISO);
+      for (let h=0; h<24; h++) {
+        const btn = document.createElement('div');
+        const isDone = !!hours[h];
+        btn.className = 'hour' + (isDone ? ' done' : '');
+        btn.textContent = (h.toString().padStart(2,'0')) + ':00';
+        btn.title = 'Toggle';
+        btn.addEventListener('click', () => {
+          hours[h] = !hours[h];
+          writeHours(dateISO, hours);
+          renderHours(dateISO);
+        });
+        wrap.appendChild(btn);
+      }
+      document.getElementById('resetHours').onclick = () => { localStorage.removeItem(HOUR_PREFIX + dateISO); renderHours(dateISO); };
+    }
+
+    // Weekly Summary
+    function mondayOfWeek(d) {
+      const x = new Date(d);
+      const day = x.getDay(); // 0=Sun
+      const diff = (day===0 ? -6 : 1) - day; // to Monday
+      x.setDate(x.getDate() + diff);
+      x.setHours(0,0,0,0);
+      return x;
+    }
+    function renderWeekSummary(centerISO) {
+      const center = new Date(centerISO);
+      const mon = mondayOfWeek(center);
+      const days = [];
+      for (let i=0;i<7;i++){ const d=new Date(mon); d.setDate(mon.getDate()+i); days.push(d); }
+
+      let totalTasks=0, totalDone=0;
+      const lines = days.map(d => {
+        const di = iso(d); const { type } = tasksFor(d);
+        const { done, total, pct } = calcPct(di, type);
+        totalTasks += total; totalDone += done;
+        const badge = pct>=80?'good':pct>=50?'warn':'bad';
+        return `${fmtWeekday(d)} ${fmtShort(d)} — <strong class="${badge}">${pct}%</strong> (${done}/${total})`;
+      });
+
+      const pctWeek = totalTasks ? Math.round(totalDone/totalTasks*100) : 0;
+      document.getElementById('weekSummary').innerHTML = `
+        <div style="margin-bottom:8px">Total: <strong>${totalDone}/${totalTasks}</strong> — <strong>${pctWeek}%</strong></div>
+        <ul style="margin:0;padding-left:18px">${lines.map(l=>`<li>${l}</li>`).join('')}</ul>
+      `;
+    }
+
+    // Streaks
+    function streakForPrayer(todayISO, lookbackDays=180) {
+      const targetSlug = slug('All Prayers Completed (Daily)');
+      let currentStreak = 0, longestStreak = 0, temp = 0;
+      for (let i=0;i<lookbackDays;i++){
+        const d = new Date(todayISO);
+        d.setDate(d.getDate()-i);
+        const di = iso(d);
+        const { type } = tasksFor(d);
+        const state = readDayState(di, type);
+        const hit = !!state[targetSlug];
+        if (hit){ temp++; if (i===0) currentStreak = temp; longestStreak = Math.max(longestStreak, temp); }
+        else { temp=0; }
+      }
+      return { currentStreak, longestStreak };
+    }
+
+    function streakOverall(todayISO, thresholdPct=80, lookbackDays=180) {
+      let current = 0, longest = 0, temp = 0;
+      for (let i=0;i<lookbackDays;i++){
+        const d = new Date(todayISO); d.setDate(d.getDate()-i);
+        const di = iso(d); const { type } = tasksFor(d);
+        const { pct } = calcPct(di, type);
+        const hit = pct >= thresholdPct;
+        if (hit){ temp++; if (i===0) current = temp; longest = Math.max(longest, temp); }
+        else { temp=0; }
+      }
+      return { current, longest };
+    }
+
+    function renderStreaks(todayISO) {
+      const { currentStreak, longestStreak } = streakForPrayer(todayISO);
+      document.getElementById('streaks').innerHTML = `
+        <div>Current: <strong class="good">${currentStreak} day(s)</strong></div>
+        <div>Longest (last 180d): <strong class="good">${longestStreak} day(s)</strong></div>
+      `;
+      const s = streakOverall(todayISO, 80, 180);
+      document.getElementById('streakOverall').innerHTML = `
+        <div>Current: <strong class="good">${s.current} day(s)</strong></div>
+        <div>Longest (≥80%, last 180d): <strong class="good">${s.longest} day(s)</strong></div>
+        <div class="muted" style="color:var(--muted);margin-top:6px">Threshold adjustable in code (default 80%).</div>
+      `;
+    }
+
+    // Focus date & init
+    const f = document.getElementById('focusDate');
+    const todayISO = new Date().toISOString().slice(0,10);
+    f.value = todayISO;
+
+    function renderAll() {
+      const isoVal = f.value || todayISO;
+      renderBoard30(isoVal);
+      renderHours(isoVal);
+      renderWeekSummary(isoVal);
+      renderStreaks(isoVal);
+    }
+
+    f.addEventListener('change', renderAll);
+    renderAll();
+  })();
+  </script>
+</body>
+</html>
