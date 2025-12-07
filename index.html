@@ -190,7 +190,6 @@
     <div class="toolbar">
       <div class="left">
         <nav aria-label="Primary">
-
         </nav>
       </div>
 
@@ -212,6 +211,10 @@
         <button id="submitDay" type="button">Submit Day</button>
         <button id="resetToday" class="ghost" type="button">Reset today</button>
         <button id="darkToggle" title="Toggle theme" class="icon" type="button">🌙</button>
+        <!-- Auth controls -->
+        <button id="loginGoogle" class="ghost" type="button">Sign in with Google</button>
+        <button id="logout" class="ghost" type="button">Sign out</button>
+        <span id="userInfo" class="hint"></span>
       </div>
     </div>
   </header>
@@ -332,8 +335,8 @@
       </div>
     </section>
 
-    <!-- Weekly charts (Last 8 weeks)
-    <section class="charts-card">
+    <!-- Weekly charts (Last 8 weeks) -->
+    <!-- <section class="charts-card">
       <h3 class="section-title">Weekly Charts (Last 8 Weeks)</h3>
       <div class="charts-grid">
         <canvas id="weekdayChart" width="400" height="220" aria-label="Weekday progress chart"></canvas>
@@ -473,12 +476,15 @@
     <p>FQAIN Personal Projects</p>
   </footer>
 
-  <!-- Single module script (Firebase + app + charts + journal) -->
+  <!-- Single module script (Firebase + app + charts + journal + auth) -->
   <script type="module">
     /* Firebase (CDN ES modules) */
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
     import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-analytics.js";
-    import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+    import {
+      getAuth, signInAnonymously, onAuthStateChanged,
+      GoogleAuthProvider, signInWithPopup, linkWithPopup, signOut
+    } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
     import {
       initializeFirestore,
       persistentLocalCache,
@@ -512,7 +518,6 @@
     getAnalytics(app);
     const db = initializeFirestore(app, { localCache: persistentLocalCache({ tabManager: persistentSingleTabManager() }) });
     const auth = getAuth(app);
-    await signInAnonymously(auth);
 
     /* Error banner helper */
     const banner = document.getElementById('banner');
@@ -539,7 +544,10 @@
       board30: document.getElementById('board30'),
       weekSummary: document.getElementById('weekSummary'),
       streaks: document.getElementById('streaks'),
-      streakOverall: document.getElementById('streakOverall')
+      streakOverall: document.getElementById('streakOverall'),
+      loginGoogle: document.getElementById('loginGoogle'),
+      logout: document.getElementById('logout'),
+      userInfo: document.getElementById('userInfo')
     };
 
     /* Extend elements with journal */
@@ -563,6 +571,49 @@
       const isLight = document.documentElement.classList.toggle('light');
       localStorage.setItem('theme', isLight ? 'light' : 'dark');
       el.darkToggle.textContent = isLight ? '☀️' : '🌙';
+    });
+
+    /* Auth: Google + Anonymous */
+    const provider = new GoogleAuthProvider();
+
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const anon = user.isAnonymous ? ' (anonymous)' : '';
+        el.userInfo.textContent = `Signed in as ${user.email || user.uid}${anon}`;
+        // Refresh data when auth changes
+        await renderChecklist();
+        await refreshLog();
+        await renderWeeklyCharts();
+        await render30Days();
+        await renderWeekSummary();
+        await renderStreaks();
+        await renderJournal();
+      } else {
+        el.userInfo.textContent = 'Not signed in';
+      }
+    });
+
+    // Sign in anonymously initially (for offline use); you can remove this if you want mandatory Google auth
+    try { await signInAnonymously(auth); } catch(e) { console.warn('Anonymous sign-in failed', e); }
+
+    el.loginGoogle.addEventListener('click', async () => {
+      try {
+        const user = auth.currentUser;
+        if (user && user.isAnonymous) {
+          await linkWithPopup(user, provider); // keeps same UID and data
+        } else {
+          await signInWithPopup(auth, provider);
+        }
+        alert('Signed in successfully!');
+      } catch (e) {
+        console.error('Sign-in failed', e);
+        showBanner('Sign-in failed: ' + (e.message || e));
+      }
+    });
+
+    el.logout.addEventListener('click', async () => {
+      await signOut(auth);
+      alert('Signed out.');
     });
 
     /* Helpers + TASKS */
