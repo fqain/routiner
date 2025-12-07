@@ -1,13 +1,28 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#0f1220" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#f5f7fb" media="(prefers-color-scheme: light)">
   <title>Daily Checklist — Ikram</title>
   <style>
-    :root { --bg:#0f1220; --bg-soft:#131735; --text:#e8ecff; --muted:#b6c0ff; --accent:#7aa2ff; --accent2:#9bffd1; --danger:#ff6b6b; --shadow:0 10px 30px rgba(0,0,0,.35); }
+    :root { --bg:#0f1220; --bg-soft:#131735; --text:#e8ecff; --muted:#b6c0ff; --accent:#7aa2ff; --accent2:#9bffd1; --danger:#ff6b6b; --shadow:0 10px 30px rgba(0,0,0,.35); color-scheme: light dark; }
     :root.light { --bg:#f5f7fb; --bg-soft:#eef2fa; --text:#12152a; --muted:#4a5270; --accent:#365dfc; --accent2:#13c4a3; --danger:#d64545; --shadow:0 10px 25px rgba(50,84,159,.15); }
-    *{box-sizing:border-box} body{margin:0;color:var(--text);background:radial-gradient(60vmax 60vmax at 5% 10%, #16193d, transparent 60%),radial-gradient(40vmax 40vmax at 95% 5%, #0b2466, transparent 60%),radial-gradient(70vmax 70vmax at 50% 100%, #0c1030, transparent 60%),var(--bg);font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial,"Noto Sans",sans-serif}
+    *{box-sizing:border-box}
+    body{
+      margin:0;color:var(--text);
+      background:
+        radial-gradient(60vmax 60vmax at 5% 10%, #16193d, transparent 60%),
+        radial-gradient(40vmax 40vmax at 95% 5%, #0b2466, transparent 60%),
+        radial-gradient(70vmax 70vmax at 50% 100%, #0c1030, transparent 60%),
+        var(--bg);
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial,"Noto Sans",sans-serif
+    }
+
+    .banner{display:none;margin:10px;border:1px solid #f5c2c2;background:#ffefef;color:#3a1a1a;border-radius:10px;padding:10px}
 
     .app-header{position:sticky;top:0;z-index:10;backdrop-filter:blur(12px) saturate(130%);background:linear-gradient(180deg,rgba(10,10,30,.6),rgba(10,10,30,.25));border-bottom:1px solid rgba(255,255,255,.08);padding:16px 22px}
     .header-row{display:flex;align-items:center;justify-content:space-between;gap:16px}
@@ -15,7 +30,7 @@
 
     .toolbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:10px}
     .toolbar .left,.toolbar .right{display:flex;align-items:center;gap:12px}
-    .control{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted)} 
+    .control{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted)}
     .control span{min-width:44px;text-align:right}
     .control input,.control select,.nav,button{height:40px;padding:0 12px;border-radius:10px}
     button.icon{width:40px;padding:0;display:grid;place-items:center}
@@ -33,32 +48,134 @@
 
     main{padding:26px;max-width:1100px;margin:0 auto}
     .summary-card{background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.04));border:1px solid rgba(255,255,255,.12);box-shadow:var(--shadow);border-radius:18px;padding:20px}
-    .summary-top{display:flex;align-items:center;justify-content:space-between;gap:20px} 
-    #dayTitle{margin:0} 
+    .summary-top{display:flex;align-items:center;justify-content:space-between;gap:20px}
+    #dayTitle{margin:0}
     #dateTitle{margin:6px 0 0;color:var(--muted)}
-    .progress{display:flex;align-items:center;gap:16px}.circular-chart{width:90px;height:90px}.circle-bg{fill:none;stroke:rgba(255,255,255,.18);stroke-width:2.8}.circle{fill:none;stroke-width:2.8;stroke-linecap:round;stroke:url(#grad) var(--accent)}
-    .progress-text{display:grid;place-items:center}.progress-text span{font-size:22px;font-weight:700}.progress-text small{color:var(--muted)}
+    .progress{display:flex;align-items:center;gap:16px}
+    .circular-chart{width:90px;height:90px}
+    .circle-bg{fill:none;stroke:rgba(255,255,255,.18);stroke-width:2.8}
+    .circle{fill:none;stroke-width:2.8;stroke-linecap:round;stroke:var(--accent)}
+    .progress-text{display:grid;place-items:center}
+    .progress-text span{font-size:22px;font-weight:700}
+    .progress-text small{color:var(--muted)}
     .checklist{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;margin-top:18px}
     .check{display:flex;align-items:center;gap:12px;background:var(--bg-soft);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:12px 12px}
-    .check input[type=checkbox]{width:22px;height:22px;accent-color:var(--accent)} 
+    .check input[type=checkbox]{width:22px;height:22px;accent-color:var(--accent)}
     .check label{flex:1}
-    .log{margin-top:28px} 
+    .log{margin-top:28px}
     .log-header{display:flex;align-items:center;justify-content:space-between}
     .table-wrap{overflow-x:auto;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);border-radius:14px}
-    #logTable{width:100%;border-collapse:collapse} 
-    #logTable th,#logTable td{padding:10px 12px;text-align:left;border-bottom:1px solid rgba(255,255,255,.08)} 
-    #logTable th{color:var(--muted);font-weight:600} 
+    #logTable{width:100%;border-collapse:collapse}
+    #logTable th,#logTable td{padding:10px 12px;text-align:left;border-bottom:1px solid rgba(255,255,255,.08)}
+    #logTable th{color:var(--muted);font-weight:600}
     #logTable tbody tr:hover{background:rgba(255,255,255,.06)}
-    .hint{color:var(--muted);font-size:13px;margin-top:8px} 
+    .hint{color:var(--muted);font-size:13px;margin-top:8px}
     footer{text-align:center;color:var(--muted);padding:20px 10px}
 
     a { text-decoration:none; color:inherit; }
     a:hover { opacity:.9; }
     a:focus { outline:2px solid #7aa2ff; outline-offset:2px; }
+
+    .charts-card{margin-top:20px;background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.04));border:1px solid rgba(255,255,255,.12);box-shadow:var(--shadow);border-radius:18px;padding:18px}
+
+    /* Prayer Times card styles */
+    .charts-cards {
+      margin-top: 24px;
+      background: radial-gradient(1200px 600px at 20% 0%, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+      border-radius: 18px;
+      padding: 28px;
+      color: #eaf2ff;
+      font-family: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+
+    .charts-cards header h1 {
+      font-size: 2.2rem;
+      font-weight: 800;
+      letter-spacing: 0.3px;
+      margin: 0 0 8px 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .charts-cards header p {
+      font-size: 1.1rem;
+      margin: 0 0 22px 0;
+      opacity: 0.9;
+    }
+
+    .prayer-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+    .prayer-table thead th { text-align: left; font-size: 1.05rem; font-weight: 700; color: #cfe2ff; padding: 10px 0 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.12); }
+    .prayer-table thead th:nth-child(1) { width: 28%; }
+    .prayer-table thead th:nth-child(2) { width: 18%; }
+    .prayer-table thead th:nth-child(3) { width: 27%; }
+    .prayer-table thead th:nth-child(4) { width: 27%; }
+    .prayer-table tbody td { font-size: 1.1rem; padding: 12px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.06); }
+    .prayer-table tbody td.countdown { font-weight: 700; color: #00e6c3; font-variant-numeric: tabular-nums; letter-spacing: 0.6px; }
+    .prayer-table tbody td.since-start { font-weight: 600; font-variant-numeric: tabular-nums; color: #a3ff8f; }
+    .prayer-table .muted { color: #8aa0b6; }
+    .updated { font-size: 0.95rem; color: #9fb3c8; margin-top: 16px; }
+
+    @media (max-width: 540px) {
+      .charts-cards { padding: 20px; }
+      .charts-cards header h1 { font-size: 1.8rem; }
+      .prayer-table thead th, .prayer-table tbody td { font-size: 1rem; }
+    }
+
+    .charts-grid{display:grid;grid-template-columns:1fr;gap:18px}
+    @media (min-width:900px){ .charts-grid{grid-template-columns:1fr 1fr} }
+    canvas{background:rgba(255,255,255,.03);border-radius:12px}
+
+    .grid-30{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;margin-top:14px}
+    .daycell{border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:10px;background:var(--bg-soft)}
+    .daycell .top{display:flex;justify-content:space-between;color:var(--muted);font-size:12px}
+    .bar{height:8px;border-radius:999px;background:rgba(255,255,255,.1);margin-top:8px;position:relative;overflow:hidden}
+    .bar .fill{position:absolute;top:0;left:0;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2))}
+    .status{margin-top:8px;font-size:12px;color:var(--muted)}
+    .tag{display:inline-block;font-size:11px;border-radius:999px;padding:4px 8px;margin-right:6px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.06)}
+    .kpi{display:flex;gap:12px;flex-wrap:wrap;margin-top:14px}
+    .kpi .mini{flex:1 1 220px;border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:12px;background:var(--bg-soft)}
+    .kpi .mini h4{margin:0 0 6px 0}
+    .good{color:#13c4a3} .warn{color:#f1c40f} .bad{color:#d64545}
+
+    /* Journal styles */
+    .journal-card{
+      margin-top:20px;
+      background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.04));
+      border:1px solid rgba(255,255,255,.12);
+      box-shadow:var(--shadow);
+      border-radius:18px;
+      padding:18px;
+    }
+    .journal-grid{ display:grid; grid-template-columns:1fr; gap:12px; margin-top:8px; }
+    @media (min-width:900px){
+      .journal-grid{ grid-template-columns:1fr 1fr; }
+      .journal-grid .journal-control:nth-child(1){ grid-column:1 / -1; }
+    }
+    .journal-control span{ min-width:140px; }
+    .journal-control input[type=number], .journal-control textarea{
+      width:100%; background:var(--bg-soft); color:var(--text);
+      border:1px solid rgba(255,255,255,.1); border-radius:10px; padding:10px 12px;
+      box-shadow:var(--shadow); outline:none; resize:vertical;
+    }
+    .journal-actions{ display:flex; gap:12px; margin-top:12px; flex-wrap:wrap; }
+
+    /* A11y */
+    .visually-hidden{position:absolute!important;clip:rect(1px,1px,1px,1px);padding:0;border:0;height:1px;width:1px;overflow:hidden;white-space:nowrap;}
   </style>
 </head>
 
 <body>
+  <noscript>
+    <div style="padding:12px;background:#ffefef;color:#3a1a1a;text-align:center">
+      This app requires JavaScript to work. Please enable JS in your browser.
+    </div>
+  </noscript>
+
+  <div id="banner" class="banner"></div>
+
   <header class="app-header">
     <div class="header-row">
       <div class="brand">
@@ -72,18 +189,19 @@
 
     <div class="toolbar">
       <div class="left">
-        <a href="dashboard.html">📊 Dashboard</a>
-         <a href="prayertimes.html">🕌 Prayer Times</a>
+        <nav aria-label="Primary">
+
+        </nav>
       </div>
 
       <div class="right">
-        <label class="control">
+        <label class="control" for="datePicker">
           <span>Date</span>
-          <input type="date" id="datePicker" />
+          <input type="date" id="datePicker" name="date" />
         </label>
-        <label class="control">
+        <label class="control" for="modeSelect">
           <span>Mode</span>
-          <select id="modeSelect">
+          <select id="modeSelect" name="mode">
             <option value="auto">Auto</option>
             <option value="weekday">Weekday (Mon–Thu)</option>
             <option value="friday">Friday</option>
@@ -91,16 +209,15 @@
           </select>
         </label>
 
-        <!-- NEW SUBMIT BUTTON -->
-        <button id="submitDay">Submit Day</button>
-
-        <button id="resetToday" class="ghost">Reset today</button>
-        <button id="darkToggle" title="Toggle theme" class="icon">🌙</button>
+        <button id="submitDay" type="button">Submit Day</button>
+        <button id="resetToday" class="ghost" type="button">Reset today</button>
+        <button id="darkToggle" title="Toggle theme" class="icon" type="button">🌙</button>
       </div>
     </div>
   </header>
 
-  <main>
+  <main id="main">
+    <!-- Summary card -->
     <section class="summary">
       <div class="summary-card">
         <div class="summary-top">
@@ -110,12 +227,18 @@
           </div>
 
           <div class="progress">
-            <svg viewBox="0 0 36 36" class="circular-chart">
-              <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-              <path id="circleProgress" class="circle" stroke-dasharray="0, 100"
+            <svg viewBox="0 0 36 36" class="circular-chart" role="progressbar"
+                 aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label="Progress">
+              <path class="circle-bg" pathLength="100"
+                d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+              <path id="circleProgress" class="circle" pathLength="100" stroke-dasharray="0 100"
                 d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
             </svg>
-            <div class="progress-text"><span id="progressPct">0%</span><small id="progressCount">0/0</small></div>
+            <div class="progress-text">
+              <span id="progressPct">0%</span>
+              <small id="progressCount">0/0</small>
+            </div>
+            <div id="progressLive" class="visually-hidden" aria-live="polite"></div>
           </div>
         </div>
 
@@ -123,39 +246,279 @@
       </div>
     </section>
 
+    <!-- Journal card -->
+    <section class="journal-card" aria-labelledby="journalTitle">
+      <h3 id="journalTitle">Daily Journal</h3>
+      <p class="hint">Reflect on the day (tied to the selected date above).</p>
+
+      <form id="journalForm" novalidate>
+        <div class="journal-grid">
+          <label class="control journal-control">
+            <span>Day Rating (1–10)</span>
+            <input type="number" id="journalRating" name="rating" min="1" max="10" step="1" placeholder="e.g., 7" />
+          </label>
+
+          <label class="control journal-control">
+            <span>What did you do good today?</span>
+            <textarea id="journalGood" name="good" rows="3" placeholder="Wins, positives, good habits..."></textarea>
+          </label>
+
+          <label class="control journal-control">
+            <span>What did you do bad today?</span>
+            <textarea id="journalBad" name="bad" rows="3" placeholder="Slips, mistakes, things to fix..."></textarea>
+          </label>
+
+          <label class="control journal-control">
+            <span>What can be improved and taken into future?</span>
+            <textarea id="journalImprove" name="improve" rows="3" placeholder="Actionables, lessons, improvements..."></textarea>
+          </label>
+        </div>
+
+        <div class="journal-actions">
+          <button id="saveJournal" type="button">Save Journal</button>
+          <button id="resetJournal" class="ghost" type="button">Reset Journal</button>
+          <button id="exportJournalCsv" class="ghost" type="button">Export Journal CSV</button>
+        </div>
+
+        <p class="hint" id="journalStatus" aria-live="polite"></p>
+      </form>
+    </section>
+
+    <!-- Progress log -->
     <section class="log">
       <div class="log-header">
         <h3>Progress Log</h3>
         <div class="log-actions">
-          <button id="exportCsv">Export CSV</button>
-          <button id="clearAll" class="danger">Clear All Data</button>
+          <button id="exportCsv" type="button">Export CSV</button>
+          <button id="clearAll" class="danger" type="button">Clear All Data</button>
         </div>
       </div>
       <div class="table-wrap">
         <table id="logTable">
           <thead>
             <tr>
-              <th>Date</th>
-              <th>Day</th>
-              <th>Mode</th>
-              <th>Completed</th>
-              <th>Total</th>
-              <th>Percent</th>
+              <th scope="col">Date</th>
+              <th scope="col">Day</th>
+              <th scope="col">Mode</th>
+              <th scope="col">Completed</th>
+              <th scope="col">Total</th>
+              <th scope="col">Percent</th>
             </tr>
           </thead>
           <tbody></tbody>
         </table>
       </div>
-      <p class="hint">Your progress is saved privately in your browser (localStorage). Export CSV anytime to back it up.</p>
+      <p class="hint">Your progress syncs privately to your Firebase project (with offline cache). Export CSV anytime.</p>
     </section>
+
+    <!-- 30-Day Cycle Board + Weekly Summary & Streaks -->
+    <section class="charts-card">
+      <h3 class="section-title">30‑Day Cycle Board</h3>
+      <div id="board30" class="grid-30"></div>
+
+      <div class="kpi">
+        <div class="mini">
+          <h4>Week (Mon–Sun)</h4>
+          <div id="weekSummary"></div>
+        </div>
+        <div class="mini">
+          <h4>Prayer Streak — “All Prayers Completed (Daily)”</h4>
+          <div id="streaks"></div>
+        </div>
+        <div class="mini">
+          <h4>Overall Completion Streak (≥80%)</h4>
+          <div id="streakOverall"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Weekly charts (Last 8 weeks)
+    <section class="charts-card">
+      <h3 class="section-title">Weekly Charts (Last 8 Weeks)</h3>
+      <div class="charts-grid">
+        <canvas id="weekdayChart" width="400" height="220" aria-label="Weekday progress chart"></canvas>
+        <canvas id="weekendChart" width="400" height="220" aria-label="Weekend progress chart"></canvas>
+      </div>
+    </section> -->
+
+    <!-- Prayer Times -->
+    <section class="charts-cards">
+      <header>
+        <h1>🕌 Prayer Times</h1>
+        <p style="color:var(--muted); margin-top:6px;">Limerick Islamic Cultural Center</p>
+      </header>
+
+      <main>
+        <div class="card">
+          <table class="prayer-table">
+            <thead>
+              <tr>
+                <th>Prayer</th>
+                <th>Time</th>
+                <th>Countdown</th>
+                <th>Since Start (min)</th>
+              </tr>
+            </thead>
+            <tbody id="prayerTable"></tbody>
+          </table>
+
+          <p class="updated" id="updatedAt"></p>
+        </div>
+      </main>
+    </section>
+
+    <script>
+      let prayerTimes = [];
+
+      async function fetchPrayerTimes() {
+        const lat = 52.6638;
+        const lng = -8.6267;
+
+        const url = `https://api.aladhan.com/v1/timings?latitude=${lat}&longitude=${lng}&method=3`;
+
+        const resp = await fetch(url);
+        const json = await resp.json();
+        return json.data;
+      }
+
+      function renderTimes(data) {
+        const t = data.timings;
+        const table = document.getElementById("prayerTable");
+
+        prayerTimes = [
+          ["Fajr", t.Fajr],
+          ["Sunrise", t.Sunrise],
+          ["Dhuhr", t.Dhuhr],
+          ["Asr", t.Asr],
+          ["Maghrib", t.Maghrib],
+          ["Isha", t.Isha]
+        ];
+
+        table.innerHTML = prayerTimes.map(([name, time], i) => `
+          <tr>
+            <td>${name}</td>
+            <td>${time}</td>
+            <td class="countdown" id="cd-${i}">--:--:--</td>
+            <td class="since-start" id="ss-${i}"><span class="muted">—</span></td>
+          </tr>
+        `).join("");
+
+        // Optional date title
+        const dateTitleEl = document.getElementById("dateTitle");
+        if (dateTitleEl) {
+          dateTitleEl.textContent = new Date().toLocaleDateString(undefined, {
+            weekday: "long",
+            year: "numeric",
+            month: "long",
+            day: "numeric"
+          });
+        }
+
+        document.getElementById("updatedAt").textContent =
+          "Source: AlAdhan.com • Times auto-updated";
+      }
+
+      // Build a Date for today's hh:mm, with seconds set to 0
+      function toTodayDate(timeStr) {
+        const [h, m] = timeStr.split(":").map(Number);
+        const d = new Date();
+        d.setHours(h, m, 0, 0);
+        return d;
+      }
+
+      function formatHMS(totalSeconds) {
+        const h = Math.floor(totalSeconds / 3600);
+        const m = Math.floor((totalSeconds % 3600) / 60);
+        const s = totalSeconds % 60;
+        return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+      }
+
+      function updateCountdowns() {
+        const now = new Date();
+
+        prayerTimes.forEach(([_, time], i) => {
+          const todayPrayer = toTodayDate(time);
+
+          // COUNTDOWN: if prayer time passed, next occurrence is tomorrow
+          let countdownTarget = new Date(todayPrayer);
+          if (todayPrayer < now) {
+            countdownTarget.setDate(countdownTarget.getDate() + 1);
+          }
+          const diffSeconds = Math.floor((countdownTarget - now) / 1000);
+          document.getElementById(`cd-${i}`).innerText = formatHMS(diffSeconds);
+
+          // SINCE START (minutes): only if today's prayer time has passed
+          const sinceCell = document.getElementById(`ss-${i}`);
+          if (todayPrayer <= now) {
+            const mins = Math.floor((now - todayPrayer) / 60000); // minutes since start
+            sinceCell.textContent = mins.toString();
+            sinceCell.classList.remove("muted");
+          } else {
+            sinceCell.innerHTML = '<span class="muted">—</span>';
+          }
+        });
+      }
+
+      (async function init() {
+        const data = await fetchPrayerTimes();
+        renderTimes(data);
+        updateCountdowns();
+        setInterval(updateCountdowns, 1000);
+      })();
+    </script>
+
   </main>
 
   <footer>
-    <p>Made with intention and consistency.</p>
+    <p>FQAIN Personal Projects</p>
   </footer>
 
-  <script>
-  (function(){
+  <!-- Single module script (Firebase + app + charts + journal) -->
+  <script type="module">
+    /* Firebase (CDN ES modules) */
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-analytics.js";
+    import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+    import {
+      initializeFirestore,
+      persistentLocalCache,
+      persistentSingleTabManager,
+      doc, setDoc, getDoc, deleteDoc,
+      collection, query, where, orderBy, getDocs, serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+
+    /* Dynamically load Chart.js (UMD) to ensure availability */
+    let Chart;
+    try {
+      const mod = await import('https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.js');
+      Chart = mod.default; // global Chart constructor
+    } catch (e) {
+      console.error('Chart.js failed to load', e);
+      document.getElementById('banner').textContent = 'Charts could not load. Check your network/ad-blocker.';
+      document.getElementById('banner').style.display = 'block';
+    }
+
+    /* Config & init */
+    const firebaseConfig = {
+      apiKey: "AIzaSyA1oK6_gXXpL5DnoVjQPP4aiXjMfQk_I7E",
+      authDomain: "routine-96534.firebaseapp.com",
+      projectId: "routine-96534",
+      storageBucket: "routine-96534.firebasestorage.app",
+      messagingSenderId: "353984607292",
+      appId: "1:353984607292:web:8b8025be49f9a3f272bf39",
+      measurementId: "G-EB3K9NKM9Y"
+    };
+    const app = initializeApp(firebaseConfig);
+    getAnalytics(app);
+    const db = initializeFirestore(app, { localCache: persistentLocalCache({ tabManager: persistentSingleTabManager() }) });
+    const auth = getAuth(app);
+    await signInAnonymously(auth);
+
+    /* Error banner helper */
+    const banner = document.getElementById('banner');
+    function showBanner(msg){ banner.textContent = msg; banner.style.display = 'block'; setTimeout(()=>banner.style.display='none', 8000); }
+
+    /* Elements */
     const el = {
       datePicker: document.getElementById('datePicker'),
       modeSelect: document.getElementById('modeSelect'),
@@ -170,9 +533,39 @@
       clearAll: document.getElementById('clearAll'),
       resetToday: document.getElementById('resetToday'),
       darkToggle: document.getElementById('darkToggle'),
-      submitDay: document.getElementById('submitDay')
+      submitDay: document.getElementById('submitDay'),
+      weekdayCanvas: document.getElementById('weekdayChart'),
+      weekendCanvas: document.getElementById('weekendChart'),
+      board30: document.getElementById('board30'),
+      weekSummary: document.getElementById('weekSummary'),
+      streaks: document.getElementById('streaks'),
+      streakOverall: document.getElementById('streakOverall')
     };
 
+    /* Extend elements with journal */
+    Object.assign(el, {
+      journalForm: document.getElementById('journalForm'),
+      journalRating: document.getElementById('journalRating'),
+      journalGood: document.getElementById('journalGood'),
+      journalBad: document.getElementById('journalBad'),
+      journalImprove: document.getElementById('journalImprove'),
+      saveJournal: document.getElementById('saveJournal'),
+      resetJournal: document.getElementById('resetJournal'),
+      exportJournalCsv: document.getElementById('exportJournalCsv'),
+      journalStatus: document.getElementById('journalStatus'),
+    });
+
+    /* Theme */
+    const initialTheme = localStorage.getItem('theme') || 'dark';
+    document.documentElement.classList.toggle('light', initialTheme === 'light');
+    el.darkToggle.textContent = initialTheme === 'light' ? '☀️' : '🌙';
+    el.darkToggle.addEventListener('click', () => {
+      const isLight = document.documentElement.classList.toggle('light');
+      localStorage.setItem('theme', isLight ? 'light' : 'dark');
+      el.darkToggle.textContent = isLight ? '☀️' : '🌙';
+    });
+
+    /* Helpers + TASKS */
     const TASKS = {
       weekday: [
         'Morning News/Podcast','Lunch Gym','Evening Study (2 hrs)',
@@ -193,23 +586,22 @@
       ]
     };
 
-    const STORAGE_PREFIX = 'habitLog::';
+    const slug = s => s.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,60);
+    const fmtDate = d => d.toLocaleDateString(undefined, { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+    const isoDate = d => d.toISOString().slice(0,10);
+    const toIsoLocal = d => { const p=n=>String(n).padStart(2,'0'); return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}`; };
+    const dayTypeAuto = d => { const wd=d.getDay(); if (wd===5) return 'friday'; if (wd===0||wd===6) return 'weekend'; return 'weekday'; };
+    const dayNameShort = d => d.toLocaleDateString(undefined, { weekday:'short' });
+    const fmtShort = d => d.toLocaleDateString(undefined, { month:'short', day:'numeric' });
 
-    const initialTheme = localStorage.getItem('theme') || 'dark';
-    document.documentElement.classList.toggle('light', initialTheme === 'light');
-    el.darkToggle.textContent = initialTheme === 'light' ? '☀️' : '🌙';
-
-    el.darkToggle.addEventListener('click', () => {
-      const isLight = document.documentElement.classList.toggle('light');
-      localStorage.setItem('theme', isLight ? 'light' : 'dark');
-      el.darkToggle.textContent = isLight ? '☀️' : '🌙';
-    });
-
-    const fmtDate = (d) => d.toLocaleDateString(undefined, { weekday:'long', year:'numeric', month:'long', day:'numeric' });
-    const isoDate = (d) => d.toISOString().slice(0,10);
-    const slug = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,60);
-    const dayTypeAuto = (d) => { const wd=d.getDay(); if (wd===5) return 'friday'; if (wd===0||wd===6) return 'weekend'; return 'weekday'; };
-
+    function ensureDate() {
+      const val = el.datePicker.value;
+      const d = new Date(val);
+      if (!val || Number.isNaN(d.getTime())) {
+        const today = new Date(); el.datePicker.value = toIsoLocal(today); return today;
+      }
+      return d;
+    }
     function getTasksFor(date, mode) {
       const type = mode === 'auto' ? dayTypeAuto(date) : mode;
       let tasks = [...TASKS[type]];
@@ -219,180 +611,529 @@
       return { type, tasks };
     }
 
-    function storageKey(date, type) {
-      return STORAGE_PREFIX + isoDate(date) + '::' + type;
+    /* Progress ring */
+    function updateProgress(tasks, state = {}) {
+      const total = tasks.length;
+      const done = tasks.filter(t => state[slug(t)]).length;
+      const pct = total ? Math.round((done/total)*100) : 0;
+      el.progressPct.textContent = pct + '%';
+      el.progressCount.textContent = `${done}/${total}`;
+      el.circleProgress.setAttribute('stroke-dasharray', `${pct} 100`);
+      const svg = document.querySelector('.circular-chart'); if (svg) svg.setAttribute('aria-valuenow', String(pct));
+      const live = document.getElementById('progressLive'); if (live) live.textContent = `Progress ${pct} percent, ${done} of ${total} tasks completed.`;
     }
 
-    function readState(date, type) {
-      const raw = localStorage.getItem(storageKey(date, type));
-      return raw ? JSON.parse(raw) : null;
+    /* Firestore helpers */
+    const docId = (dateIso, type) => `${dateIso}__${type}`;
+    const userDocRef = (uid, dateIso, type) => doc(db, 'users', uid, 'habitLogs', docId(dateIso, type));
+    function userCol(uid){ return collection(db, 'users', uid, 'habitLogs'); }
+
+    async function getRange(uid, startIso, endIso) {
+      const q = query(userCol(uid), where('dateIso','>=', startIso), where('dateIso','<=', endIso), orderBy('dateIso'));
+      const snap = await getDocs(q);
+      const map = new Map(); snap.forEach(d => map.set(d.data().dateIso, d.data()));
+      return map; // Map<dateIso, docData>
+    }
+    async function readState(date, type) {
+      try {
+        const uid = auth.currentUser?.uid; if (!uid) throw new Error('Not authenticated');
+        const snap = await getDoc(userDocRef(uid, isoDate(date), type));
+        return snap.exists() ? snap.data().state : null;
+      } catch (err) { console.error('[readState] failed', err); showBanner(`Read error: ${err.message || err}`); return null; }
+    }
+    async function writeState(date, type, obj, tasks) {
+      const uid = auth.currentUser?.uid; if (!uid) throw new Error('Not authenticated (no uid)');
+      const dateIso = isoDate(date);
+      const doneList = tasks.filter(t => obj[slug(t)]).map(t=>slug(t));
+      const missedList = tasks.filter(t => !obj[slug(t)]).map(t=>slug(t));
+      const doneCount = doneList.length; const totalCount = tasks.length; const missedCount = totalCount - doneCount;
+      const pct = totalCount ? Math.round((doneCount/totalCount)*100) : 0;
+      const payload = { state: obj, doneList, missedList, doneCount, missedCount, totalCount, pct, dateIso, type, createdAt: serverTimestamp(), updatedAt: serverTimestamp() };
+      try { await setDoc(userDocRef(uid, dateIso, type), payload, { merge: false }); }
+      catch (err) { console.error('[submit] write FAILED', err); showBanner(`Write failed: ${err.code || ''} ${err.message || err}`); throw err; }
+    }
+    async function removeState(date, type) {
+      try { const uid = auth.currentUser?.uid; if (!uid) return; await deleteDoc(userDocRef(uid, isoDate(date), type)); }
+      catch (err) { console.error('[removeState] failed', err); showBanner(`Delete error: ${err.message || err}`); }
+    }
+    async function listStates() {
+      try { const uid = auth.currentUser?.uid; if (!uid) return []; const q = query(userCol(uid), orderBy('dateIso','desc')); const snap = await getDocs(q); return snap.docs.map(d => d.data()); }
+      catch (err) { console.error('[listStates] failed', err); showBanner(`List error: ${err.message || err}`); return []; }
     }
 
-    function writeState(date, type, obj) {
-      localStorage.setItem(storageKey(date, type), JSON.stringify(obj));
-    }
-
-    function renderChecklist() {
-      const date = new Date(el.datePicker.value);
+    /* Checklist rendering */
+    async function renderChecklist() {
+      const date = ensureDate();
       const { type, tasks } = getTasksFor(date, el.modeSelect.value);
       el.dayTitle.textContent = type === 'weekday' ? 'Weekday (Mon–Thu)' : (type === 'friday' ? 'Friday' : 'Weekend (Sat–Sun)');
       el.dateTitle.textContent = fmtDate(date);
 
-      const saved = readState(date, type);
+      const saved = await readState(date, type);
       el.checklist.innerHTML = '';
 
-      const currentState = {};
-      tasks.forEach(task => { currentState[slug(task)] = false });
+      const currentState = {}; tasks.forEach(task => { currentState[slug(task)] = false; });
 
       tasks.forEach(task => {
         const id = slug(task);
         const row = document.createElement('div'); row.className = 'check';
-        const cb = document.createElement('input'); cb.type = 'checkbox'; cb.id = id;
+        const cb  = document.createElement('input'); cb.type = 'checkbox'; cb.id = id;
 
         if (saved && saved[id]) cb.checked = true;
         if (saved) cb.disabled = true;
 
         const label = document.createElement('label'); label.htmlFor = id; label.textContent = task;
-
-        cb.addEventListener('change', () => {
-          currentState[id] = cb.checked;
-          updateProgress(tasks, currentState);
-        });
-
-        row.appendChild(cb);
-        row.appendChild(label);
+        cb.addEventListener('change', () => { currentState[id] = cb.checked; updateProgress(tasks, currentState); });
+        row.appendChild(cb); row.appendChild(label);
         el.checklist.appendChild(row);
       });
 
       updateProgress(tasks, saved || currentState);
     }
 
-    function updateProgress(tasks, state) {
-      state = state || {};
-      const total = tasks.length;
-      const done = tasks.filter(t => state[slug(t)]).length;
-      const pct = total ? Math.round((done/total)*100) : 0;
-      el.progressPct.textContent = pct + '%';
-      el.progressCount.textContent = `${done}/${total}`;
-      el.circleProgress.setAttribute('stroke-dasharray', `${pct}, 100`);
-    }
-
-    function refreshLog() {
-      const rows = [];
-      for (let i = 0; i < localStorage.length; i++) {
-        const key = localStorage.key(i);
-        if (!key.startsWith(STORAGE_PREFIX)) continue;
-
-        const [, payload] = key.split(STORAGE_PREFIX);
-        const [dateIso, type] = payload.split('::');
-        const state = JSON.parse(localStorage.getItem(key));
-        const { tasks } = getTasksFor(new Date(dateIso), type);
-        const total = tasks.length;
-        const done = tasks.filter(t => state[slug(t)]).length;
-        const pct = total ? Math.round((done/total)*100) : 0;
-        const dayName = new Date(dateIso).toLocaleDateString(undefined, { weekday:'long' });
-        rows.push({ dateIso, dayName, type, done, total, pct });
+    async function refreshLog() {
+      const rows = await listStates();
+      el.logTableBody.textContent = '';
+      for (const r of rows) {
+        const tr = document.createElement('tr');
+        const dayName = new Date(r.dateIso).toLocaleDateString(undefined, { weekday:'long' });
+        const cells = [r.dateIso, dayName, r.type, String(r.doneCount ?? 0), String(r.totalCount ?? 0), `${r.pct ?? 0}%`];
+        for (const c of cells) { const td = document.createElement('td'); td.textContent = c; tr.appendChild(td); }
+        el.logTableBody.appendChild(tr);
       }
-
-      rows.sort((a,b) => a.dateIso < b.dateIso ? 1 : -1);
-
-      el.logTableBody.innerHTML = rows.map(r => `
-        <tr>
-          <td>${r.dateIso}</td>
-          <td>${r.dayName}</td>
-          <td>${r.type}</td>
-          <td>${r.done}</td>
-          <td>${r.total}</td>
-          <td>${r.pct}%</td>
-        </tr>
-      `).join('');
     }
 
-    function submitDay() {
-      const date = new Date(el.datePicker.value);
+    async function submitDay() {
+      const date = ensureDate();
       const { type, tasks } = getTasksFor(date, el.modeSelect.value);
 
       const state = {};
-      tasks.forEach(task => {
-        const id = slug(task);
-        const cb = document.getElementById(id);
-        state[id] = cb.checked;
-      });
+      tasks.forEach(task => { const id = slug(task); const cb = document.getElementById(id); state[id] = !!cb?.checked; });
 
-      writeState(date, type, state);
-
-      tasks.forEach(task => {
-        const cb = document.getElementById(slug(task));
-        cb.disabled = true;
-      });
-
-      updateProgress(tasks, state);
-      refreshLog();
-
-      alert("Today's progress has been submitted and locked.");
+      try {
+        await writeState(date, type, state, tasks);
+        tasks.forEach(task => { const cb = document.getElementById(slug(task)); if (cb) cb.disabled = true; });
+        updateProgress(tasks, state);
+        await refreshLog();
+        await renderWeeklyCharts();
+        await render30Days();
+        await renderWeekSummary();
+        await renderStreaks();
+        alert("Today's progress has been submitted and locked.");
+      } catch(err) { /* error already bannered */ }
     }
 
-    function resetToday() {
-      const date = new Date(el.datePicker.value);
+    async function resetToday() {
+      if (!confirm('Reset today’s submitted progress?')) return;
+      const date = ensureDate();
       const { type } = getTasksFor(date, el.modeSelect.value);
-      localStorage.removeItem(storageKey(date, type));
-      renderChecklist();
-      refreshLog();
+      await removeState(date, type);
+      await renderChecklist();
+      await refreshLog();
+      await renderWeeklyCharts();
+      await render30Days();
+      await renderWeekSummary();
+      await renderStreaks();
     }
 
-    function clearAllData() {
+    async function clearAllData() {
       if (!confirm('This will permanently remove all saved progress. Continue?')) return;
-      const keysToRemove = [];
-      for (let i=0; i<localStorage.length; i++) {
-        const key = localStorage.key(i);
-        if (key.startsWith(STORAGE_PREFIX)) keysToRemove.push(key);
-      }
-      keysToRemove.forEach(k => localStorage.removeItem(k));
-      refreshLog();
-      renderChecklist();
+      try {
+        const uid = auth.currentUser?.uid; if (!uid) return;
+        const col = userCol(uid);
+        const snap = await getDocs(col);
+        for (const d of snap.docs) { await deleteDoc(d.ref); }
+        await refreshLog();
+        await renderChecklist();
+        await renderWeeklyCharts();
+        await render30Days();
+        await renderWeekSummary();
+        await renderStreaks();
+      } catch (err) { console.error('[clearAll] failed', err); showBanner(`Clear error: ${err.message || err}`); }
     }
 
-    function exportCSV() {
-      const headers = ['Date','Day','Mode','Completed','Total','Percent'];
-      const lines = [headers.join(',')];
-
-      for (let i = 0; i < localStorage.length; i++) {
-        const key = localStorage.key(i);
-        if (!key.startsWith(STORAGE_PREFIX)) continue;
-
-        const [, payload] = key.split(STORAGE_PREFIX);
-        const [dateIso, type] = payload.split('::');
-        const state = JSON.parse(localStorage.getItem(key));
-        const { tasks } = getTasksFor(new Date(dateIso), type);
-        const total = tasks.length;
-        const done = tasks.filter(t => state[slug(t)]).length;
-        const pct = total ? Math.round((done/total)*100) : 0;
-        const dayName = new Date(dateIso).toLocaleDateString(undefined, { weekday:'long' });
-
-        lines.push([dateIso, dayName, type, done, total, pct].join(','));
+    async function exportCSV() {
+      const header = ['Date','Day','Mode','Completed','Missed','Total','Percent'];
+      const rows   = await listStates();
+      rows.sort((a,b) => a.dateIso < b.dateIso ? 1 : -1);
+      const lines = [header.join(',')];
+      for (const r of rows) {
+        const dayName = new Date(r.dateIso).toLocaleDateString(undefined, { weekday:'long' });
+        lines.push([r.dateIso, dayName, r.type, r.doneCount ?? 0, r.missedCount ?? 0, r.totalCount ?? 0, (r.pct ?? 0)+'%'].join(','));
       }
-
-      const blob = new Blob([lines.join('\n')], { type:'text/csv;charset=utf-8;' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url; a.download = 'daily-checklist-progress.csv';
-      document.body.appendChild(a); a.click(); document.body.removeChild(a);
-      URL.revokeObjectURL(url);
+      const csv  = '\uFEFF' + lines.join('\n');
+      const blob = new Blob([csv], { type:'text/csv;charset=utf-8;' });
+      const url  = URL.createObjectURL(blob);
+      const a    = document.createElement('a'); a.href = url; a.download = `daily-checklist-${isoDate(new Date())}.csv`;
+      document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
     }
 
-    el.datePicker.addEventListener('change', renderChecklist);
+    /* Events */
+    el.datePicker.addEventListener('change', async () => {
+      await renderChecklist(); await renderWeekSummary(); await render30Days(); await renderStreaks(); await renderJournal();
+    });
     el.modeSelect.addEventListener('change', renderChecklist);
     el.exportCsv.addEventListener('click', exportCSV);
     el.clearAll.addEventListener('click', clearAllData);
     el.resetToday.addEventListener('click', resetToday);
     el.submitDay.addEventListener('click', submitDay);
 
-    const todayIso = new Date().toISOString().slice(0,10);
-    el.datePicker.value = todayIso;
-    renderChecklist();
-    refreshLog();
-  })();
-  </script>
+    /* =========================
+       Weekly charts (last 8 weeks)
+       ========================= */
+    function getWeekBounds(d) {
+      const date = new Date(d);
+      const day = date.getDay(); // 0 Sun .. 6 Sat
+      const monday = new Date(date);
+      const diff = (day===0 ? -6 : 1) - day;
+      monday.setDate(date.getDate() + diff);
+      monday.setHours(0,0,0,0);
+      const sunday = new Date(monday); sunday.setDate(monday.getDate()+6);
+      return { monday, sunday };
+    }
+    function weekLabel(monday) {
+      const temp = new Date(monday);
+      const start = new Date(temp.getFullYear(),0,1);
+      const week = Math.ceil((((temp - start) / 86400000) + start.getDay()+1) / 7);
+      return `W${week} ${monday.getFullYear()}`;
+    }
+    let weekdayChart, weekendChart;
 
+    function buildStackedChart(ctx, labels, completed, missed, pctLine, title) {
+      if (!Chart || !ctx) return null;
+      const data = {
+        labels,
+        datasets: [
+          { label:'Completed', data: completed, backgroundColor:'#13c4a3', stack:'tasks' },
+          { label:'Missed',    data: missed,    backgroundColor:'#d64545', stack:'tasks' },
+          { type:'line', label:'% Progress', data:pctLine, borderColor:'#7aa2ff', backgroundColor:'rgba(122,162,255,.2)', yAxisID:'y1', tension:.25 }
+        ]
+      };
+      const options = {
+        responsive:true,
+        plugins:{ legend:{position:'top'}, title:{display:false,text:title} },
+        scales:{ x:{stacked:true}, y:{stacked:true, beginAtZero:true, title:{display:true,text:'Tasks'}},
+                 y1:{beginAtZero:true, position:'right', title:{display:true,text:'%'}, suggestedMax:100, grid:{drawOnChartArea:false}} }
+      };
+      return new Chart(ctx, { type:'bar', data, options });
+    }
+
+    async function renderWeeklyCharts() {
+      const uid = auth.currentUser?.uid; if (!uid || !Chart) return;
+      const today = new Date(); const { monday: endMon } = getWeekBounds(today);
+
+      // Build 8 weeks (oldest -> newest)
+      const labels = []; const weeks = [];
+      for (let i=7;i>=0;i--){
+        const m = new Date(endMon); m.setDate(endMon.getDate() - i*7);
+        const s = new Date(m); s.setDate(m.getDate()+6);
+        labels.push(weekLabel(m)); weeks.push({ m, s });
+      }
+
+      const startIso = toIsoLocal(weeks[0].m); const endIso = toIsoLocal(weeks[weeks.length-1].s);
+      const docsMap = await getRange(uid, startIso, endIso);
+
+      // Weekday (Mon–Thu only; count days with type === 'weekday')
+      const aggWeekday = weeks.map(({m}) => {
+        let done=0,total=0;
+        for (let d=1; d<=4; d++){ // Mon..Thu
+          const day=new Date(m); day.setDate(m.getDate()+d-1);
+          const iso=toIsoLocal(day); const doc=docsMap.get(iso);
+          const type = doc?.type ?? dayTypeAuto(day);
+          if (type!=='weekday') continue; // only submitted weekday logs
+          const tasks = getTasksFor(day,'weekday').tasks;
+          const doneCount = doc ? tasks.filter(t=>doc.state[slug(t)]).length : 0;
+          done+=doneCount; total+=tasks.length;
+        }
+        const missed=Math.max(0,total-done), pct= total?Math.round((done/total)*100):0; return {done,missed,pct};
+      });
+
+      // Weekend (Sat + Sun; only type === 'weekend')
+      const aggWeekend = weeks.map(({m}) => {
+        let done=0,total=0;
+        for (const offset of [5,6]) { // Sat=+5, Sun=+6 relative to Monday
+          const day=new Date(m); day.setDate(m.getDate()+offset);
+          const iso=toIsoLocal(day); const doc=docsMap.get(iso);
+          const type = doc?.type ?? dayTypeAuto(day);
+          if (type!=='weekend') continue;
+          const tasks = getTasksFor(day,'weekend').tasks;
+          const doneCount = doc ? tasks.filter(t=>doc.state[slug(t)]).length : 0;
+          done+=doneCount; total+=tasks.length;
+        }
+        const missed=Math.max(0,total-done), pct= total?Math.round((done/total)*100):0; return {done,missed,pct};
+      });
+
+      const wk_completed = aggWeekday.map(x=>x.done), wk_missed = aggWeekday.map(x=>x.missed), wk_pct = aggWeekday.map(x=>x.pct);
+      const we_completed = aggWeekend.map(x=>x.done), we_missed = aggWeekend.map(x=>x.missed), we_pct = aggWeekend.map(x=>x.pct);
+
+      if (weekdayChart) weekdayChart.destroy(); if (weekendChart) weekendChart.destroy();
+
+      weekdayChart = buildStackedChart(el.weekdayCanvas?.getContext('2d'), labels, wk_completed, wk_missed, wk_pct, 'Weekdays');
+      weekendChart = buildStackedChart(el.weekendCanvas?.getContext('2d'), labels, we_completed, we_missed, we_pct, 'Weekends');
+    }
+
+    async function render30Days() {
+      const uid = auth.currentUser?.uid; if (!uid) return;
+      el.board30.textContent = '';
+
+      const focus = new Date(el.datePicker.value || toIsoLocal(new Date()));
+      const start = new Date(focus); start.setDate(start.getDate()-29);
+      const startIso = toIsoLocal(start); const endIso = toIsoLocal(focus);
+      const docsMap = await getRange(uid, startIso, endIso);
+
+      for (let i=0;i<30;i++){
+        const d = new Date(start); d.setDate(start.getDate()+i);
+        const iso = toIsoLocal(d);
+        const docData = docsMap.get(iso) || null;
+
+        const type = docData?.type || dayTypeAuto(d);
+        const tasks = getTasksFor(d, type).tasks;
+        const done = docData ? tasks.filter(t => docData.state[slug(t)]).length : 0;
+        const total = tasks.length; const pct = total ? Math.round((done/total)*100) : 0;
+
+        const cell = document.createElement('div'); cell.className='daycell';
+        const top = document.createElement('div'); top.className='top';
+        top.innerHTML = `<span>${fmtShort(d)} (${dayNameShort(d)})</span><span class="tag">${type}</span>`;
+        const bar = document.createElement('div'); bar.className='bar';
+        const fill = document.createElement('div'); fill.className='fill'; fill.style.width = pct + '%'; bar.appendChild(fill);
+        const status = document.createElement('div'); status.className='status';
+        const badge = pct>=80?'good':pct>=50?'warn':'bad';
+        status.innerHTML = `<span class="tag">${done}/${total}</span><span class="tag ${badge}">${pct}%</span>`;
+
+        cell.appendChild(top); cell.appendChild(bar); cell.appendChild(status);
+        el.board30.appendChild(cell);
+      }
+    }
+
+    function mondayOfWeek(d) {
+      const x = new Date(d); const day=x.getDay();
+      const diff = (day===0 ? -6 : 1) - day;
+      x.setDate(x.getDate() + diff); x.setHours(0,0,0,0);
+      return x;
+    }
+
+    async function renderWeekSummary() {
+      const uid = auth.currentUser?.uid; if (!uid) return;
+      const focus = new Date(el.datePicker.value || toIsoLocal(new Date()));
+      const mon = mondayOfWeek(focus); const sun = new Date(mon); sun.setDate(mon.getDate()+6);
+      const docs = await getRange(uid, toIsoLocal(mon), toIsoLocal(sun));
+
+      let totalTasks=0, totalDone=0;
+      const lines = [];
+      for (let i=0;i<7;i++){
+        const d = new Date(mon); d.setDate(mon.getDate()+i);
+        const iso = toIsoLocal(d);
+        const docData = docs.get(iso);
+        const type = docData?.type || dayTypeAuto(d);
+        const tasks = getTasksFor(d, type).tasks;
+        const done = docData ? tasks.filter(t => docData.state[slug(t)]).length : 0;
+        const pct = tasks.length ? Math.round((done/tasks.length)*100) : 0;
+        totalTasks += tasks.length; totalDone += done;
+        const badge = pct>=80?'good':pct>=50?'warn':'bad';
+        lines.push(`${dayNameShort(d)} ${fmtShort(d)} — <strong class="${badge}">${pct}%</strong> (${done}/${tasks.length})`);
+      }
+      const pctWeek = totalTasks ? Math.round((totalDone/totalTasks)*100) : 0;
+      el.weekSummary.innerHTML = `<div style="margin-bottom:8px">Total: <strong>${totalDone}/${totalTasks}</strong> — <strong>${pctWeek}%</strong></div>
+        <ul style="margin:0;padding-left:18px">${lines.map(l=>`<li>${l}</li>`).join('')}</ul>`;
+    }
+
+    async function streakForPrayer(todayISO, lookbackDays = 180) {
+      const uid = auth.currentUser?.uid; if (!uid) return { currentStreak: 0, longestStreak: 0 };
+      const start = new Date(todayISO); start.setDate(start.getDate() - (lookbackDays - 1));
+      const docs = await getRange(uid, toIsoLocal(start), todayISO);
+      const key = slug('All Prayers Completed (Daily)');
+      let temp=0, longestStreak=0, currentStreak=0;
+      for (let i=0;i<lookbackDays;i++){
+        const d = new Date(todayISO); d.setDate(d.getDate()-i); const di = toIsoLocal(d);
+        const hit = !!docs.get(di)?.state[key];
+        if (hit){ temp++; if (i===0) currentStreak=temp; longestStreak=Math.max(longestStreak,temp); } else { temp=0; }
+      }
+      return { currentStreak, longestStreak };
+    }
+    async function streakOverall(todayISO, thresholdPct = 80, lookbackDays = 180) {
+      const uid = auth.currentUser?.uid; if (!uid) return { current: 0, longest: 0 };
+      const start = new Date(todayISO); start.setDate(start.getDate() - (lookbackDays - 1));
+      const docs = await getRange(uid, toIsoLocal(start), todayISO);
+      let temp=0, longest=0, current=0;
+      for (let i=0;i<lookbackDays;i++){
+        const d = new Date(todayISO); d.setDate(d.getDate()-i); const di = toIsoLocal(d);
+        const doc = docs.get(di); if (!doc){ temp=0; continue; }
+        const type = doc.type || dayTypeAuto(d);
+        const tasks = getTasksFor(d, type).tasks;
+        const done = tasks.filter(t => doc.state[slug(t)]).length;
+        const pct = tasks.length ? Math.round((done/tasks.length)*100) : 0;
+        if (pct >= thresholdPct){ temp++; if (i===0) current=temp; longest=Math.max(longest,temp); } else { temp=0; }
+      }
+      return { current, longest };
+    }
+    async function renderStreaks() {
+      const todayISO = toIsoLocal(new Date());
+      const prayer = await streakForPrayer(todayISO);
+      el.streaks.innerHTML = `<div>Current: <strong class="good">${prayer.currentStreak} day(s)</strong></div>
+        <div>Longest (last 180d): <strong class="good">${prayer.longestStreak} day(s)</strong></div>`;
+      const s = await streakOverall(todayISO, 80, 180);
+      el.streakOverall.innerHTML = `<div>Current: <strong class="good">${s.current} day(s)</strong></div>
+        <div>Longest (≥80%, last 180d): <strong class="good">${s.longest}</strong> day(s)</div>
+        <div class="muted" style="color:var(--muted);margin-top:6px">Threshold adjustable in code (default 80%).</div>`;
+    }
+
+    /* ==== Journal Firestore helpers ==== */
+    const userJournalDocRef = (uid, dateIso) => doc(db, 'users', uid, 'journals', dateIso);
+
+    async function readJournal(date) {
+      try {
+        const uid = auth.currentUser?.uid; if (!uid) throw new Error('Not authenticated');
+        const snap = await getDoc(userJournalDocRef(uid, isoDate(date)));
+        return snap.exists() ? snap.data() : null;
+      } catch (err) {
+        console.error('[readJournal] failed', err);
+        showBanner(`Journal read error: ${err.message || err}`);
+        return null;
+      }
+    }
+
+    async function writeJournal(date, payload) {
+      try {
+        const uid = auth.currentUser?.uid; if (!uid) throw new Error('Not authenticated');
+        const dateIso = isoDate(date);
+        const data = {
+          dateIso,
+          rating: Number(payload.rating) || null,
+          good: String(payload.good || ''),
+          bad: String(payload.bad || ''),
+          improve: String(payload.improve || ''),
+          createdAt: serverTimestamp(),
+          updatedAt: serverTimestamp()
+        };
+        await setDoc(userJournalDocRef(uid, dateIso), data, { merge: false });
+      } catch (err) {
+        console.error('[writeJournal] failed', err);
+        showBanner(`Journal save failed: ${err.code || ''} ${err.message || err}`);
+        throw err;
+      }
+    }
+
+    async function removeJournal(date) {
+      try {
+        const uid = auth.currentUser?.uid; if (!uid) return;
+        await deleteDoc(userJournalDocRef(uid, isoDate(date)));
+      } catch (err) {
+        console.error('[removeJournal] failed', err);
+        showBanner(`Journal delete error: ${err.message || err}`);
+      }
+    }
+
+    async function listJournals() {
+      try {
+        const uid = auth.currentUser?.uid; if (!uid) return [];
+        const q = query(collection(db, 'users', uid, 'journals'), orderBy('dateIso','desc'));
+        const snap = await getDocs(q);
+        return snap.docs.map(d => d.data());
+      } catch (err) {
+        console.error('[listJournals] failed', err);
+        showBanner(`Journal list error: ${err.message || err}`);
+        return [];
+      }
+    }
+
+    /* ==== Journal UI ==== */
+    function setJournalDisabled(disabled) {
+      el.journalRating.disabled = disabled;
+      el.journalGood.disabled = disabled;
+      el.journalBad.disabled = disabled;
+      el.journalImprove.disabled = disabled;
+      el.saveJournal.disabled = disabled;
+    }
+
+    async function renderJournal() {
+      const date = ensureDate();
+      const journal = await readJournal(date);
+
+      if (journal) {
+        el.journalRating.value = journal.rating ?? '';
+        el.journalGood.value = journal.good ?? '';
+        el.journalBad.value = journal.bad ?? '';
+        el.journalImprove.value = journal.improve ?? '';
+        setJournalDisabled(true);
+        el.journalStatus.textContent = `Journal submitted for ${journal.dateIso}. Use "Reset Journal" to edit.`;
+      } else {
+        el.journalRating.value = '';
+        el.journalGood.value = '';
+        el.journalBad.value = '';
+        el.journalImprove.value = '';
+        setJournalDisabled(false);
+        el.journalStatus.textContent = 'No journal saved for this date yet.';
+      }
+    }
+
+    async function saveJournal() {
+      const date = ensureDate();
+      const rating = Number(el.journalRating.value);
+      if (!Number.isFinite(rating) || rating < 1 || rating > 10) {
+        alert('Please enter a rating between 1 and 10.');
+        el.journalRating.focus();
+        return;
+      }
+
+      const payload = {
+        rating,
+        good: el.journalGood.value,
+        bad: el.journalBad.value,
+        improve: el.journalImprove.value
+      };
+
+      try {
+        await writeJournal(date, payload);
+        setJournalDisabled(true);
+        el.journalStatus.textContent = `Journal saved for ${isoDate(date)}.`;
+        await renderJournal();
+      } catch (err) {
+        /* banner already shown */
+      }
+    }
+
+    async function resetJournal() {
+      if (!confirm('Reset today’s journal entry? This will delete it and unlock the form.')) return;
+      const date = ensureDate();
+      await removeJournal(date);
+      await renderJournal();
+    }
+
+    async function exportJournalCSV() {
+      const header = ['Date','Rating','Good','Bad','Improve'];
+      const rows = await listJournals();
+      rows.sort((a,b) => a.dateIso < b.dateIso ? 1 : -1);
+      const lines = [header.join(',')];
+      for (const r of rows) {
+        const cells = [
+          r.dateIso || '',
+          (r.rating ?? ''),
+          (r.good ?? '').replace(/\r?\n/g,' '),
+          (r.bad ?? '').replace(/\r?\n/g,' '),
+          (r.improve ?? '').replace(/\r?\n/g,' ')
+        ];
+        lines.push(cells.map(c => `"${String(c).replace(/"/g,'""')}"`).join(',')); // CSV-safe quotes
+      }
+      const csv = '\uFEFF' + lines.join('\n');
+      const blob = new Blob([csv], { type:'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href = url; a.download = `daily-journal-${isoDate(new Date())}.csv`;
+      document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+    }
+
+    /* Events (including journal) */
+    el.saveJournal.addEventListener('click', saveJournal);
+    el.resetJournal.addEventListener('click', resetJournal);
+    el.exportJournalCsv.addEventListener('click', exportJournalCSV);
+
+    /* Boot */
+    el.datePicker.value = toIsoLocal(new Date());
+    await renderChecklist();
+    await refreshLog();
+    await renderWeeklyCharts();
+    await render30Days();
+    await renderWeekSummary();
+    await renderStreaks();
+    await renderJournal();
+  </script>
 </body>
 </html>
